@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#1b5e8c">
+<link rel="manifest" href="manifest.json">
+<title>منسق ميداني</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#eef2f6;color:#1d2b36;padding-bottom:80px}
+header{background:#1b5e8c;color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:18px}
+nav{display:flex;background:#fff;border-bottom:1px solid #d5dde5;position:sticky;top:48px;z-index:4}
+nav button{flex:1;padding:12px 4px;border:0;background:none;font-size:14px;font-family:inherit}
+nav button.on{border-bottom:3px solid #1b5e8c;color:#1b5e8c;font-weight:bold}
+.page{display:none;padding:12px}.page.on{display:block}
+.card{background:#fff;border-radius:10px;padding:12px;margin-bottom:12px;box-shadow:0 1px 3px #0002}
+label{display:block;font-size:13px;color:#556;margin:8px 0 4px}
+input,select,textarea{width:100%;padding:10px;border:1px solid #c5ced8;border-radius:8px;font-size:15px;font-family:inherit}
+textarea{min-height:60px}
+details{background:#fff;border-radius:10px;margin-bottom:10px;box-shadow:0 1px 3px #0002}
+summary{padding:14px;font-weight:bold;font-size:15px;color:#1b5e8c;list-style:none}
+summary .cnt{float:left;font-weight:normal;font-size:12px;color:#777}
+.item{padding:10px 12px;border-top:1px solid #eef}
+.item p{margin:0 0 6px;font-size:13px;color:#334}
+.row{display:flex;gap:6px}
+.row textarea{flex:1}
+.mic{width:44px;border:0;border-radius:8px;background:#e8f1f8;font-size:20px}
+.mic.rec{background:#e53935}
+.btn{display:block;width:100%;padding:14px;border:0;border-radius:10px;font-size:16px;font-family:inherit;margin-top:10px;background:#1b5e8c;color:#fff}
+.btn.sec{background:#fff;color:#1b5e8c;border:2px solid #1b5e8c}
+.btn.red{background:#c62828}
+.small{font-size:12px;color:#778}
+table.att{width:100%;font-size:11px;border-collapse:collapse}
+table.att td,table.att th{border:1px solid #ccd;padding:2px}
+table.att input{padding:4px;font-size:13px;text-align:center}
+.hist{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eef;font-size:14px}
+</style>
+</head>
+<body>
+<header><h1>📋 منسق ميداني – تقارير الزيارات</h1></header>
+<nav>
+<button id="t1" class="on" onclick="go(1)">زيارة اليوم</button>
+<button id="t2" onclick="go(2)">السجل</button>
+<button id="t3" onclick="go(3)">تقرير الشهر</button>
+</nav>
+
+<div id="p1" class="page on">
+ <div class="card">
+  <label>اسم الموظف</label><input id="emp" placeholder="اكتب اسمك مرة واحدة">
+  <label>الوظيفة</label><input id="job" value="منسق اقليمي">
+  <label>المدرسة</label>
+  <select id="schoolSel" onchange="schoolChange()"></select>
+  <input id="schoolOther" placeholder="اكتب اسم المدرسة" style="display:none;margin-top:6px">
+  <label>التاريخ</label><input id="date" type="date">
+  <label>وقت الزيارة</label>
+  <div class="row"><input id="from" type="time" value="08:00"><input id="to" type="time" value="15:00"></div>
+ </div>
+ <div id="sections"></div>
+ <div class="card">
+  <b>جدول الحضور والانصراف</b>
+  <p class="small">اكتب الأرقام فقط</p>
+  <div id="att"></div>
+ </div>
+ <div class="card">
+  <b>ما يستجد من أعمال أو أحداث خلال الزيارة</b>
+  <div class="row"><textarea id="events" oninput="save()"></textarea><button class="mic" onclick="mic('events',this)">🎤</button></div>
+ </div>
+ <button class="btn" onclick="exportDoc()">📄 إنهاء اليوم وتصدير ملف وورد</button>
+ <button class="btn sec" onclick="newVisit()">➕ زيارة جديدة</button>
+</div>
+
+<div id="p2" class="page">
+ <div class="card"><b>الزيارات المحفوظة</b><div id="hist"></div></div>
+</div>
+
+<div id="p3" class="page">
+ <div class="card">
+  <label>الشهر</label><input id="month" type="month">
+  <button class="btn" onclick="exportMonth()">📊 تصدير التقرير الشهري (وورد)</button>
+  <p class="small">يجمع كل زيارات الشهر المحدد: لكل قسم، ردود كل مدرسة وتاريخ الزيارة.</p>
+ </div>
+ <div class="card">
+  <b>نسخة احتياطية</b>
+  <button class="btn sec" onclick="backup()">حفظ نسخة من البيانات</button>
+  <button class="btn sec" onclick="document.getElementById('rf').click()">استرجاع نسخة</button>
+  <input type="file" id="rf" accept=".json" style="display:none" onchange="restore(this)">
+ </div>
+</div>
+
+<script>
+const SECTIONS = [{"id": "security", "title": "متابعة الأمن", "items": ["افراد الامن والمشرف متواجدين فى اماكنهم والباب الرئيسي للمدرسه مغلق", "تواجد فرد امن نسائى بالمدرسه ودورها مفعل داخل المدرسه", "مراجعه دفتر العاملين بالامن ومطابقتها بدفتر الحضور والانصراف", "مراجعه دفتر الزائرين الخاص بالمدرسه", "مراجعه عدد افراد الامن بالورديات المختلفه", "التزام افراد الامن بالزى والمظهر العام", "تعاون افراد الامن والمشرف مع اداره المدرسه وتنفيذ التعليمات والمهام المطلوبه منهم"]}, {"id": "hr", "title": "متابعة شئون العاملين والحضور والانصراف", "items": ["متابعة دفتر حضور وانصراف العاملين وبياناته (انظر جدول الحضور أدناه)", "مراجعه دفاتر الحضور والانصراف الخاصه بالمدرسة (عاملين + امن + خدمات)", "مراجعه والاطلاع على دفاتر الاذونات والاجازات دفتر 68 ومطابقته بدفتر الحضور", "مراجعه سجلات التحقيقات الداخليه بالمدرسة وسلامة اجراءات التحقيق", "مراجعه مصوغات تعيين او اوراق استقالات من المدرسة", "استلام مستندات استعاضات طبيه من المدرسه + استعاضات اجازة وضع", "موقف تجديد العقود والتعاقدات الجديده للعاملين بالمدارس"]}, {"id": "cleaning", "title": "متابعة أعمال النظافة", "items": ["الاماكن التى تم متابعة النظافه بها فى المدرسة", "التزام عمال الخدمات بالزى والمظهر العام", "عدد عمال الخدمات وتواجد مشرف الخدمات", "تواجد الخامات الخاصه بالنظافه فى الاماكن المخصصه لها", "مستوى النظافه فى المدرسه خلال الزياره", "متابعه تواجد افراد الخدمات امام الحمامات المخصصه لهم ووجود خطه عمل بالمدرسه وتنفيذها"]}, {"id": "store", "title": "متابعة أعمال المخزن", "items": ["عدد اذون الاضافه التى تم مراجعتها واستلامها بالارقام خلال الزياره", "عدد اذون الصرف التى تم مراجعتها واستلامها بالارقام خلال الزياره", "مراجعه استلام اى توريدات بالمدرسة مع ذكر جهة التوريد خلال الزياره", "وسلامة الاجراءات من (محضر فحص + اذون اضافه + اى مستندات تكميليه) سواء توريدات اميرالد او توريدات حكوميه", "مراجعه المخازن والتاكد من سلامة التخزين بها", "هل تم عمل جرد عشوائى او جرد كلى للمخازن اثناء الزياره"]}, {"id": "maint", "title": "متابعة أعمال الصيانة", "items": ["مراجعه احتياج المدرسة الى اعمال صيانه خاصه (سباكه + كهرباء + نجاره)", "مراجعه حاله ماكينه التصوير والطابعات بالمدارس", "مراجعه حاله الكاميرات بالمدارس", "مراجعه حاله الشاشات التفاعليه بالمدارس", "مراجعه استهلاك المدارس من ورق التصوير وتواجد سجل التصوير والتسجيل به بشكل يومى بالمدرسة"]}, {"id": "advance", "title": "متابعة السلفة", "items": ["مراجعه ارسال اى طلبات احتياج اثناء الزياره مع كتابه اسم المدارس", "مراجعه احضار اى موافقات لطلبات احتياج خلال الزياره مع كتابه اسماء المدارس", "مراجعه مستندات المشتريات والتاكد من سلامتها خلال الزياره", "استلام السلفه خلال الزياره"]}, {"id": "agri", "title": "متابعة أعمال الزراعة", "items": ["مراجعه حضور وانصراف عامل الزراعه من واقع دفاتر الامن بالمدرسة", "مراجعه حاله الزراعات بالمدرسة خلال الزياره", "مراجعه حاله النجيله خلال الزياره", "مراجعه احتياج المدرسة الى تهذيب وتقليم الاشجار"]}, {"id": "comm", "title": "التواصل مع الإدارات الأخرى", "items": ["هل تم ارسال اى طلبات اجازه الى الشركة مع كتابة اسماء المدارس", "عدد الموافقات على طلبات الاجازات المرسله من الشركة", "هل تم ارسال طلب مفردات مرتب الى الشركه مع كتابة اسماء المدارس", "هل تم ارسال اى طلب شهادات خبره مع كتابة اسماء المدارس", "عدد مفردات المرتب وشهادات الخبره المرسله من الشركه للمدارس", "هل تم ارسال اى استقالات الى الشركه مع كتابة اسماء المدارس", "عدد الموافقات الخاصه بالاستقالات المرسله من الشركه للمدارس", "هل تم تسليم اى مستحقات طبيه شيكات الى المدارس", "هل تم تسليم اى كارنيهات طبيه الى المدارس"]}];
+const SCHOOLS = ["الأنفوشي - الإسكندرية", "زهراء مدينة نصر - القاهرة", "القاهرة الجديدة - التجمع الخامس", "دمياط الجديدة", "سمنود - الغربية", "كفر الشيخ", "بني عبيد - الدقهلية", "جمصة - الدقهلية", "تمي الأمديد - الدقهلية", "كفر صقر - الشرقية", "الزقازيق - الشرقية", "العاشر من رمضان - الشرقية", "سنورس - الفيوم", "الفيوم الجديدة", "بني سويف", "المنيا", "الغردقة - البحر الأحمر"];
+const ATT = ["عدد العاملين","عدد الحضور","وضع","مرض","عارضة/اعتيادي","تدريب/مأمورية","تأخيرات","اذون","بدل تناوب","اليابان","غياب"];
+let cur = null;
+const $ = id => document.getElementById(id);
+const store = () => JSON.parse(localStorage.getItem('visits')||'{}');
+const putStore = o => localStorage.setItem('visits', JSON.stringify(o));
+const uid = () => 'v'+Date.now()+Math.random().toString(36).slice(2,7);
+
+function go(n){[1,2,3].forEach(i=>{$('p'+i).classList.toggle('on',i==n);$('t'+i).classList.toggle('on',i==n)});if(n==2)renderHist()}
+
+function build(){
+  const sel=$('schoolSel');
+  sel.innerHTML='<option value="">اختر المدرسة...</option>'+SCHOOLS.map(s=>`<option>${s}</option>`).join('')+'<option value="__o">مدرسة أخرى (اكتب الاسم)</option>';
+  let h='';
+  SECTIONS.forEach(sec=>{
+    h+=`<details><summary>${sec.title}<span class="cnt" id="c_${sec.id}"></span></summary>`;
+    sec.items.forEach((it,i)=>{
+      h+=`<div class="item"><p>${i+1}- ${it}</p><div class="row"><textarea id="f_${sec.id}_${i}" oninput="save()"></textarea><button class="mic" onclick="mic('f_${sec.id}_${i}',this)">🎤</button></div></div>`;
+    });
+    h+='</details>';
+  });
+  $('sections').innerHTML=h;
+  $('att').innerHTML='<table class="att"><tr>'+ATT.map(a=>`<th>${a}</th>`).join('')+'</tr><tr>'+ATT.map((a,i)=>`<td><input id="a_${i}" type="number" inputmode="numeric" oninput="save()"></td>`).join('')+'</tr></table>';
+  ['emp','job','date','from','to','schoolOther'].forEach(i=>$(i).addEventListener('input',save));
+  $('emp').value=localStorage.getItem('emp')||'';
+  $('month').value=new Date().toISOString().slice(0,7);
+  newVisit(true);
+}
+
+function schoolChange(){ $('schoolOther').style.display=$('schoolSel').value=='__o'?'block':'none'; save(); }
+function schoolName(){ return $('schoolSel').value=='__o'?$('schoolOther').value:$('schoolSel').value; }
+
+function collect(){
+  const d={id:cur,emp:$('emp').value,job:$('job').value,school:schoolName(),schoolSel:$('schoolSel').value,date:$('date').value,from:$('from').value,to:$('to').value,events:$('events').value,att:ATT.map((a,i)=>$('a_'+i).value),f:{}};
+  SECTIONS.forEach(s=>s.items.forEach((it,i)=>{d.f[s.id+'_'+i]=$('f_'+s.id+'_'+i).value}));
+  return d;
+}
+function fill(d){
+  $('emp').value=d.emp||localStorage.getItem('emp')||'';$('job').value=d.job||'منسق اقليمي';
+  $('schoolSel').value=d.schoolSel||'';$('schoolOther').value=d.schoolSel=='__o'?d.school:'';schoolChange();
+  $('date').value=d.date||new Date().toISOString().slice(0,10);$('from').value=d.from||'08:00';$('to').value=d.to||'15:00';
+  $('events').value=d.events||'';
+  ATT.forEach((a,i)=>$('a_'+i).value=(d.att||[])[i]||'');
+  SECTIONS.forEach(s=>s.items.forEach((it,i)=>{$('f_'+s.id+'_'+i).value=(d.f||{})[s.id+'_'+i]||''}));
+  counts();
+}
+function counts(){SECTIONS.forEach(s=>{let n=0;s.items.forEach((it,i)=>{if($('f_'+s.id+'_'+i).value.trim())n++});$('c_'+s.id).textContent=n+'/'+s.items.length})}
+function save(){ if(!cur)return; const o=store(); o[cur]=collect(); putStore(o); localStorage.setItem('emp',$('emp').value); localStorage.setItem('last',cur); counts(); }
+function newVisit(first){
+  const last=localStorage.getItem('last'); const o=store();
+  if(first&&last&&o[last]){cur=last;fill(o[last]);return}
+  cur=uid(); fill({}); save(); go(1); window.scrollTo(0,0);
+}
+function openVisit(id){cur=id;localStorage.setItem('last',id);fill(store()[id]);go(1)}
+function delVisit(id){if(!confirm('حذف هذه الزيارة؟'))return;const o=store();delete o[id];putStore(o);if(cur==id)newVisit();renderHist()}
+function renderHist(){
+  const v=Object.values(store()).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  $('hist').innerHTML=v.length?v.map(x=>`<div class="hist"><span onclick="openVisit('${x.id}')">${x.date||''} – ${x.school||'بدون مدرسة'}</span><span><button onclick="exportDoc('${x.id}')">📄</button> <button onclick="delVisit('${x.id}')">🗑</button></span></div>`).join(''):'<p class="small">لا توجد زيارات بعد</p>';
+}
+
+/* الإدخال الصوتي */
+let rec=null;
+function mic(id,btn){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('استخدم ميكروفون الكيبورد للإملاء الصوتي');$(id).focus();return}
+  if(rec){rec.stop();return}
+  rec=new SR();rec.lang='ar-EG';rec.interimResults=false;btn.classList.add('rec');
+  rec.onresult=e=>{const t=e.results[0][0].transcript;$(id).value+=($(id).value?' ':'')+t;save()};
+  rec.onend=()=>{btn.classList.remove('rec');rec=null};
+  rec.onerror=()=>{btn.classList.remove('rec');rec=null};
+  rec.start();
+}
+
+/* تصدير وورد: ملف .doc بصيغة HTML يفتحه Word مباشرة */
+const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const wrap=body=>`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" dir="rtl"><head><meta charset="utf-8"><style>
+@page{size:A4;margin:1.5cm}body{font-family:Arial;direction:rtl}table{border-collapse:collapse;width:100%}td,th{border:1px solid #000;padding:4px;font-size:11pt;vertical-align:top}th{background:#d9e2f3}h1,h2{text-align:center}</style></head><body dir="rtl">${body}</body></html>`;
+function dl(name,html){
+  const b=new Blob(['\ufeff',html],{type:'application/msword'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'.doc';document.body.appendChild(a);a.click();a.remove();
+}
+function visitHtml(d){
+  const dt=d.date?new Date(d.date):null;const day=dt?DAYS[dt.getDay()]:'';
+  let h=`<h1>التقرير اليومي</h1><table><tr><td><b>اسم المدرسة:</b> ${esc(d.school)}</td><td><b>الوظيفة:</b> ${esc(d.job)}</td><td><b>اسم الموظف:</b> ${esc(d.emp)}</td></tr><tr><td><b>التاريخ:</b> ${esc(d.date)}</td><td><b>اليوم:</b> ${day}</td><td><b>الوقت:</b> من ${esc(d.from)} الى ${esc(d.to)}</td></tr></table><br>`;
+  SECTIONS.forEach(sec=>{
+    h+=`<h2>${sec.title}</h2><table><tr><th style="width:8%">م</th><th>البند</th><th style="width:35%">الردود والملاحظات</th></tr>`;
+    sec.items.forEach((it,i)=>{h+=`<tr><td>${i+1}</td><td>${esc(it)}</td><td>${esc((d.f||{})[sec.id+'_'+i])}</td></tr>`});
+    h+='</table><br>';
+    if(sec.id=='hr'&&(d.att||[]).some(x=>x)){
+      h+='<table><tr>'+ATT.map(a=>`<th>${a}</th>`).join('')+'</tr><tr>'+ATT.map((a,i)=>`<td>${esc((d.att||[])[i])}</td>`).join('')+'</tr></table><br>';
+    }
+  });
+  h+=`<h2>ما يستجد من أعمال أو أحداث خلال الزيارة</h2><p>${esc(d.events)||'-'}</p><br><table><tr><td><b>مقدم التقرير:</b> ${esc(d.emp)}<br><br>التوقيع/</td><td><b>يعتمد:</b> مدير ادارة المنسق<br><br>التوقيع/</td></tr></table>`;
+  return h;
+}
+function exportDoc(id){
+  save();const d=id?store()[id]:collect();
+  if(!d.school){alert('اختر المدرسة أولا');return}
+  dl('تقرير_'+d.school.replace(/\s+/g,'_')+'_'+d.date,wrap(visitHtml(d)));
+}
+function exportMonth(){
+  const m=$('month').value;const v=Object.values(store()).filter(x=>(x.date||'').startsWith(m)).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!v.length){alert('لا توجد زيارات في هذا الشهر');return}
+  let h=`<h1>التقرير الشهري لفريق المنسقين عن شهر ${m}</h1><p>عدد الزيارات: ${v.length} – المدارس: ${[...new Set(v.map(x=>x.school))].map(esc).join('، ')}</p>`;
+  SECTIONS.forEach(sec=>{
+    h+=`<h2>${sec.title}</h2><table><tr><th style="width:5%">م</th><th style="width:30%">البند</th><th>ما تم رصده في الزيارات (المدرسة – التاريخ: الرد)</th></tr>`;
+    sec.items.forEach((it,i)=>{
+      const lines=v.map(x=>{const r=(x.f||{})[sec.id+'_'+i];return r&&r.trim()?`<b>${esc(x.school)}</b> – ${esc(x.date)}: ${esc(r)}`:null}).filter(Boolean);
+      h+=`<tr><td>${i+1}</td><td>${esc(it)}</td><td>${lines.join('<br>')||'-'}</td></tr>`;
+    });
+    h+='</table><br>';
+  });
+  const ev=v.filter(x=>x.events&&x.events.trim());
+  h+=`<h2>أحداث واجراءات خلال الزيارات</h2><p>${ev.map(x=>`<b>${esc(x.school)}</b> – ${esc(x.date)}: ${esc(x.events)}`).join('<br>')||'-'}</p>`;
+  h+='<h2>نقاط تحتاج اعادة النظر</h2><table>'+[1,2,3,4,5,6,7,8,9,10].map(n=>`<tr><td style="width:8%">${n}</td><td>&nbsp;</td></tr>`).join('')+'</table>';
+  dl('التقرير_الشهري_'+m,wrap(h));
+}
+function backup(){const b=new Blob([JSON.stringify(store())],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='backup_'+new Date().toISOString().slice(0,10)+'.json';a.click()}
+function restore(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{putStore({...store(),...JSON.parse(r.result)});alert('تم الاسترجاع');renderHist()}catch(e){alert('ملف غير صالح')}};r.readAsText(f)}
+
+build();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
+</script>
+</body></html>
