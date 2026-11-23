@@ -72,7 +72,6 @@ table.att input{padding:4px;font-size:13px;text-align:center}
   <div class="row"><textarea id="events" oninput="save()"></textarea><button class="mic" onclick="mic('events',this)">🎤</button></div>
  </div>
 
- <!-- قسم ألبوم الصور في نهاية الصفحة -->
  <div class="card">
   <b>ألبوم الصور من الزيارة</b>
   <p class="small">قم برفع صور الزيارة هنا لتظهر منظمة (3 صور في كل صف) في نهاية التقرير</p>
@@ -231,8 +230,8 @@ function build(){
   newVisit(true);
 }
 
-function schoolChange(){ $('schoolOther').style.display=$('schoolSel').value=='__o'?'block':'none'; save(); }
-function schoolName(){ return $('schoolSel').value=='__o'?$('schoolOther').value:$('schoolSel').value; }
+function schoolChange(){ $('schoolOther').style.display=$('schoolSel'].value=='__o'?'block':'none'; save(); }
+function schoolName(){ return $('schoolSel'].value=='__o'?$('schoolOther').value:$('schoolSel'].value; }
 
 function handleVisitImgs(input){
   const files = input.files;
@@ -274,7 +273,7 @@ function delVisitImg(idx){
 
 function collect(){
   const oldImgs = (store()[cur]||{}).visitImgs || [];
-  const d={id:cur,emp:$('emp').value,job:$('job').value,school:schoolName(),schoolSel:$('schoolSel').value,date:$('date').value,from:$('from').value,to:$('to').value,events:$('events').value,att:ATT.map((a,i)=>$('a_'+i).value),f:{}, visitImgs:oldImgs};
+  const d={id:cur,emp:$('emp').value,job:$('job').value,school:schoolName(),schoolSel:$('schoolSel'].value,date:$('date').value,from:$('from').value,to:$('to').value,events:$('events').value,att:ATT.map((a,i)=>$('a_'+i).value),f:{}, visitImgs:oldImgs};
   SECTIONS.forEach(s=>s.items.forEach((it,i)=>{d.f[s.id+'_'+i]=$('f_'+s.id+'_'+i).value}));
   return d;
 }
