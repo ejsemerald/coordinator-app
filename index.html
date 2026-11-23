@@ -3,46 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="theme-color" content="#1b5e8c">
+<meta name="theme-color" content="#2e7d32">
 <link rel="manifest" href="manifest.json">
-<title>منسق ميداني</title>
+<title>منسق ميداني – إيميرالد</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#eef2f6;color:#1d2b36;padding-bottom:80px}
-header{background:#1b5e8c;color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f4f9f4;color:#1d2b36;padding-bottom:80px}
+header{background:#2e7d32;color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
 header h1{margin:0;font-size:18px}
-nav{display:flex;background:#fff;border-bottom:1px solid #d5dde5;position:sticky;top:48px;z-index:4}
-nav button{flex:1;padding:12px 4px;border:0;background:none;font-size:14px;font-family:inherit}
-nav button.on{border-bottom:3px solid #1b5e8c;color:#1b5e8c;font-weight:bold}
+nav{display:flex;background:#fff;border-bottom:1px solid #c8e6c9;position:sticky;top:48px;z-index:4}
+nav button{flex:1;padding:12px 4px;border:0;background:none;font-size:14px;font-family:inherit;color:#333}
+nav button.on{border-bottom:3px solid #2e7d32;color:#2e7d32;font-weight:bold}
 .page{display:none;padding:12px}.page.on{display:block}
-.card{background:#fff;border-radius:10px;padding:12px;margin-bottom:12px;box-shadow:0 1px 3px #0002}
-label{display:block;font-size:13px;color:#556;margin:8px 0 4px}
-input,select,textarea{width:100%;padding:10px;border:1px solid #c5ced8;border-radius:8px;font-size:15px;font-family:inherit}
+.card{background:#fff;border-radius:10px;padding:12px;margin-bottom:12px;box-shadow:0 1px 3px rgba(46,125,50,0.15);border:1px solid #e8f5e9}
+label{display:block;font-size:13px;color:#2e7d32;margin:8px 0 4px;font-weight:bold}
+input,select,textarea{width:100%;padding:10px;border:1px solid #c8e6c9;border-radius:8px;font-size:15px;font-family:inherit}
 textarea{min-height:60px}
-details{background:#fff;border-radius:10px;margin-bottom:10px;box-shadow:0 1px 3px #0002}
-summary{padding:14px;font-weight:bold;font-size:15px;color:#1b5e8c;list-style:none}
-summary .cnt{float:left;font-weight:normal;font-size:12px;color:#777}
-.item{padding:10px 12px;border-top:1px solid #eef}
+details{background:#fff;border-radius:10px;margin-bottom:10px;box-shadow:0 1px 3px rgba(46,125,50,0.15);border:1px solid #e8f5e9}
+summary{padding:14px;font-weight:bold;font-size:15px;color:#2e7d32;list-style:none;cursor:pointer}
+summary .cnt{float:left;font-weight:normal;font-size:12px;color:#558b2f}
+.item{padding:10px 12px;border-top:1px solid #e8f5e9}
 .item p{margin:0 0 6px;font-size:13px;color:#334}
 .row{display:flex;gap:6px}
 .row textarea{flex:1}
-.mic{width:44px;border:0;border-radius:8px;background:#e8f1f8;font-size:20px}
-.mic.rec{background:#e53935}
-.btn{display:block;width:100%;padding:14px;border:0;border-radius:10px;font-size:16px;font-family:inherit;margin-top:10px;background:#1b5e8c;color:#fff}
-.btn.sec{background:#fff;color:#1b5e8c;border:2px solid #1b5e8c}
-.btn.red{background:#c62828}
-.small{font-size:12px;color:#778}
+.mic{width:44px;border:0;border-radius:8px;background:#e8f5e9;color:#2e7d32;font-size:20px}
+.mic.rec{background:#e53935;color:#fff}
+.btn{display:block;width:100%;padding:14px;border:0;border-radius:10px;font-size:16px;font-family:inherit;margin-top:10px;background:#2e7d32;color:#fff;font-weight:bold;cursor:pointer}
+.btn.sec{background:#fff;color:#2e7d32;border:2px solid #2e7d32}
+.btn.red{background:#c62828;color:#fff}
+.small{font-size:12px;color:#558b2f}
 table.att{width:100%;font-size:11px;border-collapse:collapse}
-table.att td,table.att th{border:1px solid #ccd;padding:2px}
+table.att td,table.att th{border:1px solid #c8e6c9;padding:4px}
+table.att th{background:#e8f5e9;color:#2e7d32}
 table.att input{padding:4px;font-size:13px;text-align:center}
-.hist{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eef;font-size:14px}
-.img-preview{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.hist{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e8f5e9;font-size:14px}
+.img-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .img-preview div{position:relative}
-.img-preview img{width:70px;height:70px;object-fit:cover;border-radius:6px;border:1px solid #ccd}
+.img-preview img{width:70px;height:70px;object-fit:cover;border-radius:6px;border:1px solid #c8e6c9}
 </style>
 </head>
 <body>
-<header><h1>📋 منسق ميداني – تقارير الزيارات</h1></header>
+<header><h1>📋 إيميرالد – منسق ميداني لتقارير الزيارات</h1></header>
 <nav>
 <button id="t1" class="on" onclick="go(1)">زيارة اليوم</button>
 <button id="t2" onclick="go(2)">السجل</button>
@@ -74,7 +75,7 @@ table.att input{padding:4px;font-size:13px;text-align:center}
  <!-- قسم ألبوم الصور في نهاية الصفحة -->
  <div class="card">
   <b>ألبوم الصور من الزيارة</b>
-  <p class="small">قم بتجميع ورفع صور الزيارة هنا لتظهر منظمة في نهاية التقرير</p>
+  <p class="small">قم برفع صور الزيارة هنا لتظهر منظمة (3 صور في كل صف) في نهاية التقرير</p>
   <input type="file" accept="image/*" multiple id="visitImgsInput" onchange="handleVisitImgs(this)" style="margin-top:6px;font-size:13px">
   <div class="img-preview" id="visitImgsPreview"></div>
  </div>
@@ -102,7 +103,7 @@ table.att input{padding:4px;font-size:13px;text-align:center}
 </div>
 
 <script>
-const SECTIONS = [{"id": "security", "title": "متابعة الأمن", "items": ["افراد الامن والمشرف متواجدين فى اماكنهم والباب الرئيسي للمدرسه مغلق", "تواجد فرد امن نسائى بالمدرسه ودورها مفعل داخل المدرسه", "مراجعه دفتر العاملين بالامن ومطابقتها بدفتر الحضور والانصراف", "مراجعه دفتر الزائرين الخاص بالمدرسه", "مراجعه عدد افراد الامن بالورديات المختلفه", "التزام افراد الامن بالزى والمظهر العام", "تعاون افراد الامن والمشرف مع اداره المدرسه وتنفيذ التعليمات والمهام المطلوبه منهم"]}, {"id": "hr", "title": "متابعة شئون العاملين والحضور والانصراف", "items": ["متابعة دفتر حضور وانصراف العاملين وبياناته (انظر جدول الحضور أدناه)", "مراجعه دفاتر الحضور والانصراف الخاصه بالمدرسة (عاملين + امن + خدمات)", "مراجعه والاطلاع على دفاتر الاذونات والاجازات دفتر 68 ومطابقته بدفتر الحضور", "مراجعه سجلات التحقيقات الداخليه بالمدرسة وسلامة اجراءات التحقيق", "مراجعه مصوغات تعيين او اوراق استقالات من المدرسة", "استلام مستندات استعاضات طبيه من المدرسه + استعاضات اجازة وضع", "موقف تجديد العقود والتعاقدات الجديده للعاملين بالمدارس"]}, {"id": "cleaning", "title": "متابعة أعمال النظافة", "items": ["الاماكن التى تم متابعة النظافه بها فى المدرسة", "التزام عمال الخدمات بالزى والمظهر العام", "عدد عمال الخدمات وتواجد مشرف الخدمات", "تواجد الخامات الخاصه بالنظافه فى الاماكن المخصصه لها", "مستوى النظافه فى المدرسه خلال الزياره", "متابعه تواجد افراد الخدمات امام الحمامات المخصصه لهم ووجود خطه عمل بالمدرسه وتنفيذها"]}, {"id": "store", "title": "متابعة أعمال المخزن", "items": ["عدد اذون الاضافه التى تم مراجعتها واستلامها بالارقام خلال الزياره", "عدد اذون الصرف التى تم مراجعتها واستلامها بالارقام خلال الزياره", "مراجعه استلام اى توريدات بالمدرسة مع ذكر جهة التوريد خلال الزياره", "وسلامة الاجراءات من (محضر فحص + اذون اضافه + اى مستندات تكميليه) سواء توريدات اميرالد او توريدات حكوميه", "مراجعه المخازن والتاكد من سلامة التخزين بها", "هل تم عمل جرد عشوائى او جرد كلى للمخازن اثناء الزياره"]}, {"id": "maint", "title": "متابعة أعمال الصيانة", "items": ["مراجعه احتياج المدرسة الى اعمال صيانه خاصه (سباكه + كهرباء + نجاره)", "مراجعه حاله ماكينه التصوير والطابعات بالمدارس", "مراجعه حاله الكاميرات بالمدارس", "مراجعه حاله الشاشات التفاعليه بالمدارس", "مراجعه استهلاك المدارس من ورق التصوير وتواجد سجل التصوير والتسجيل به بشكل يومى بالمدرسة"]}, {"id": "advance", "title": "متابعة السلفة", "items": ["مراجعه ارسال اى طلبات احتياج اثناء الزياره مع كتابه اسم المدارس", "مراجعه احضار اى موافقات لطلبات احتياج خلال الزياره مع كتابه اسماء المدارس", "مراجعه مستندات المشتريات والتاكد من سلامتها خلال الزياره", "استلام السلفه خلال الزياره"]}, {"id": "agri", "title": "متابعة أعمال الزراعة", "items": ["مراجعه حضور وانصراف عامل الزراعه من واقع دفاتر الامن بالمدرسة", "مراجعه حاله الزراعات بالمدرسة خلال الزياره", "مراجعه حاله النجيله خلال الزياره", "مراجعه احتياج المدرسة الى تهذيب وتقليم الاشجار"]}, {"id": "comm", "title": "التواصل مع الإدارات الأخرى", "items": ["هل تم ارسال اى طلبات اجازه الى الشركة مع كتابة اسماء المدارس", "عدد الموافقات على طلبات الاجازات المرسله من الشركة", "هل تم ارسال طلب مفردات مرتب الى الشركه مع كتابة اسماء المدارس", "هل تم ارسال اى شهادات خبره مع كتابة اسماء المدارس", "عدد مفردات المرتب وشهادات الخبره المرسله من الشركه للمدارس", "هل تم ارسال اى استقالات الى الشركه مع كتابة اسماء المدارس", "عدد الموافقات الخاصه بالاستقالات المرسله من الشركه للمدارس", "هل تم تسليم اى مستحقات طبيه شيكات الى المدارس", "هل تم تسليم اى كارنيهات طبيه الى المدارس"]}];
+const SECTIONS = [{"id": "security", "title": "متابعة الأمن", "items": ["افراد الامن والمشرف متواجدين فى اماكنهم والباب الرئيسي للمدرسه مغلق", "تواجد فرد امن نسائى بالمدرسه ودورها مفعل داخل المدرسه", "مراجعه دفتر العاملين بالامن ومطابقتها بدفتر الحضور والانصراف", "مراجعه دفتر الزائرين الخاص بالمدرسه", "مراجعه عدد افراد الامن بالورديات المختلفه", "التزام افراد الامن بالزى والمظهر العام", "تعاون افراد الامن والمشرف مع اداره المدرسه وتنفيذ التعليمات والمهام المطلوبه منهم"]}, {"id": "hr", "title": "متابعة شئون العاملين والحضور والانصراف", "items": ["متابعة دفتر حضور وانصراف العاملين وبياناته (انظر جدول الحضور أدناه)", "مراجعه دفاتر الحضور والانصراف الخاصه بالمدرسة (عاملين + امن + خدمات)", "مراجعه والاطلاع على دفاتر الاذونات والاجازات دفتر 68 ومطابقته بدفتر الحضور", "مراجعه سجلات التحقيقات الداخليه بالمدرسة وسلامة اجراءات التحقيق", "مراجعه مصوغات تعيين او اوراق استقالات من المدرسة", "استلام مستندات استعاضات طبيه من المدرسه + استعاضات اجازة وضع", "موقف تجديد العقود والتعاقدات الجديده للعاملين بالمدارس"]}, {"id": "cleaning", "title": "متابعة أعمال النظافة", "items": ["الاماكن التى تم متابعة النظافه بها فى المدرسة", "التزام عمال الخدمات بالزى والمظهر العام", "عدد عمال الخدمات وتواجد مشرف الخدمات", "تواجد الخامات الخاصه بالنظافه فى الاماكن المخصصه لها", "مستوى النظافه فى المدرسه خلال الزياره", "متابعه تواجد افراد الخدمات امام الحمامات المخصصه لهم ووجود خطه عمل بالمدرسه وتنفيذها"]}, {"id": "store", "title": "متابعة أعمال المخزن", "items": ["عدد اذون الاضافه التى تم مراجعتها واستلامها بالارقام خلال الزياره", "عدد اذون الصرف التى تم مراجعتها واستلامها بالارقام خلال الزياره", "مراجعه استلام اى توريدات بالمدرسة مع ذكر جهة التوريد خلال الزياره", "وسلامة الاجراءات من (محضر فحص + اذون اضافه + اى مستندات تكميليه) سواء توريدات اميرالد او توريدات حكوميه", "مراجعه المخازن والتاكد من سلامة التخزين بها", "هل تم عمل جرد عشوائى او جرد كلى للمخازن اثناء الزياره"]}, {"id": "maint", "title": "متابعة أعمال الصيانة", "items": ["مراجعه احتياج المدرسة الى اعمال صيانه خاصه (سباكه + كهرباء + نجاره)", "مراجعه حاله ماكينه التصوير والطابعات بالمدارس", "مراجعه حاله الكاميرات بالمدارس", "مراجعه حاله الشاشات التفاعليه بالمدارس", "مراجعه استهلاك المدارس من ورق التصوير وتواجد سجل التصوير والتسجيل به بشكل يومى بالمدرسة"]}, {"id": "advance", "title": "متابعة السلفة", "items": ["مراجعه ارسال اى طلبات احتياج اثناء الزياره مع كتابه اسم المدارس", "مراجعه احضار اى موافقات لطلبات احتياج خلال الزياره مع كتابه اسماء المدارس", "مراجعه مستندات المشتريات والتاكيد من سلامتها خلال الزياره", "استلام السلفه خلال الزياره"]}, {"id": "agri", "title": "متابعة أعمال الزراعة", "items": ["مراجعه حضور وانصراف عامل الزراعه من واقع دفاتر الامن بالمدرسة", "مراجعه حاله الزراعات بالمدرسة خلال الزياره", "مراجعه حاله النجيله خلال الزياره", "مراجعه احتياج المدرسة الى تهذيب وتقليم الاشجار"]}, {"id": "comm", "title": "التواصل مع الإدارات الأخرى", "items": ["هل تم ارسال اى طلبات اجازه الى الشركة مع كتابة اسماء المدارس", "عدد الموافقات على طلبات الاجازات المرسله من الشركة", "هل تم ارسال طلب مفردات مرتب الى الشركه مع كتابة اسماء المدارس", "هل تم ارسال اى شهادات خبره مع كتابة اسماء المدارس", "عدد مفردات المرتب وشهادات الخبره المرسله من الشركه للمدارس", "هل تم ارسال اى استقالات الى الشركه مع كتابة اسماء المدارس", "عدد الموافقات الخاصه بالاستقالات المرسله من الشركه للمدارس", "هل تم تسليم اى مستحقات طبيه شيكات الى المدارس", "هل تم تسليم اى كارنيهات طبيه الى المدارس"]}];
 const SCHOOLS = ["الأنفوشي - الإسكندرية", "زهراء مدينة نصر - القاهرة", "القاهرة الجديدة - التجمع الخامس", "دمياط الجديدة", "سمنود - الغربية", "كفر الشيخ", "بني عبيد - الدقهلية", "جمصة - الدقهلية", "تمي الأمديد - الدقهلية", "كفر صقر - الشرقية", "الزقازيق - الشرقية", "العاشر من رمضان - الشرقية", "سنورس - الفيوم", "الفيوم الجديدة", "بني سويف", "المنيا", "الغردقة - البحر الأحمر"];
 const ATT = ["عدد العاملين","عدد الحضور","وضع","مرض","عارضة/اعتيادي","تدريب/مأمورية","تأخيرات","اذون","بدل تناوب","اليابان","غياب"];
 let cur = null;
@@ -132,8 +133,8 @@ function build(){
   newVisit(true);
 }
 
-function schoolChange(){ $('schoolOther').style.display=$('schoolSel').value=='__o'?'block':'none'; save(); }
-function schoolName(){ return $('schoolSel').value=='__o'?$('schoolOther').value:$('schoolSel').value; }
+function schoolChange(){ $('schoolOther').style.display=$('schoolSel'].value=='__o'?'block':'none'; save(); }
+function schoolName(){ return $('schoolSel'].value=='__o'?$('schoolOther').value:$('schoolSel'].value; }
 
 function handleVisitImgs(input){
   const files = input.files;
@@ -175,7 +176,7 @@ function delVisitImg(idx){
 
 function collect(){
   const oldImgs = (store()[cur]||{}).visitImgs || [];
-  const d={id:cur,emp:$('emp').value,job:$('job').value,school:schoolName(),schoolSel:$('schoolSel').value,date:$('date').value,from:$('from').value,to:$('to').value,events:$('events').value,att:ATT.map((a,i)=>$('a_'+i).value),f:{}, visitImgs:oldImgs};
+  const d={id:cur,emp:$('emp').value,job:$('job').value,school:schoolName(),schoolSel:$('schoolSel'].value,date:$('date').value,from:$('from').value,to:$('to').value,events:$('events').value,att:ATT.map((a,i)=>$('a_'+i).value),f:{}, visitImgs:oldImgs};
   SECTIONS.forEach(s=>s.items.forEach((it,i)=>{d.f[s.id+'_'+i]=$('f_'+s.id+'_'+i).value}));
   return d;
 }
@@ -218,13 +219,18 @@ function mic(id,btn){
   rec.start();
 }
 
-/* تصدير وورد: ملف .doc بصيغة HTML يفتحه Word مباشرة مع اللوجو وألبوم الصور في النهاية */
+/* تصدير وورد: ملف .doc بصيغة HTML مع اللوجو بحدود صفحة وألبوم صور (3 صور بجانب بعض) */
 const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
 const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
 const wrap=body=>`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" dir="rtl"><head><meta charset="utf-8"><style>
-@page{size:A4;margin:1.5cm}body{font-family:Arial;direction:rtl}table{border-collapse:collapse;width:100%}td,th{border:1px solid #000;padding:6px;font-size:11pt;vertical-align:top}th{background:#d9e2f3}h1,h2{text-align:center}
-.logo{text-align:center;margin-bottom:20px}.logo img{max-height:80px}
+@page{size:A4;margin:1.5cm}
+body{font-family:Arial;direction:rtl;border:2px solid #2e7d32;padding:15px;}
+table{border-collapse:collapse;width:100%}
+td,th{border:1px solid #2e7d32;padding:6px;font-size:11pt;vertical-align:top}
+th{background:#e8f5e9;color:#2e7d32}
+h1,h2{text-align:center;color:#2e7d32}
+.logo{text-align:center;margin-bottom:15px}.logo img{max-height:75px}
 </style></head><body dir="rtl">${body}</body></html>`;
 
 function dl(name,html){
@@ -255,13 +261,25 @@ function visitHtml(d){
 
   h+=`<h2>ما يستجد من أعمال أو أحداث خلال الزيارة</h2><p>${esc(d.events)||'-'}</p><br>`;
 
-  // ألبوم الصور في النهاية تماماً كما طلبتم
+  // ألبوم الصور في النهاية: 3 صور في كل صف (جدول منسق للورد)
   if(d.visitImgs && d.visitImgs.length > 0){
-    h+=`<h2>ألبوم الصور من الزيارة</h2><div style="text-align:center">`;
-    d.visitImgs.forEach((src, idx) => {
-      h+=`<div style="margin-bottom:15px;"><p><b>متابعة ${idx+1}</b></p><img src="${src}" style="max-width:85%;max-height:400px;border:1px solid #ccc;border-radius:6px;"></div>`;
-    });
-    h+=`</div><br>`;
+    h+=`<h2>ألبوم الصور من الزيارة</h2>`;
+    h+=`<table style="border:none;">`;
+    for(let i=0; i<d.visitImgs.length; i+=3){
+      h+=`<tr>`;
+      for(let j=0; j<3; j++){
+        const idx = i + j;
+        h+=`<td style="border:none; text-align:center; width:33%;">`;
+        if(idx < d.visitImgs.length){
+          h+=`<img src="${d.visitImgs[idx]}" style="width:160px;height:120px;object-fit:cover;border:1px solid #2e7d32;border-radius:4px;margin-bottom:4px;"><br><span style="font-size:10pt;color:#333;">متابعة ${idx+1}</span>`;
+        } else {
+          h+=`&nbsp;`;
+        }
+        h+=`</td>`;
+      }
+      h+=`</tr>`;
+    }
+    h+=`</table><br>`;
   }
 
   h+=`<table><tr><td><b>مقدم التقرير:</b> ${esc(d.emp)}<br><br>التوقيع/</td><td><b>يعتمد:</b> مدير ادارة المنسق<br><br>التوقيع/</td></tr></table>`;
@@ -302,7 +320,7 @@ function exportMonth(){
 function backup(){const b=new Blob([JSON.stringify(store())],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='backup_'+new Date().toISOString().slice(0,10)+'.json';a.click()}
 function restore(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{putStore({...store(),...JSON.parse(r.result)});alert('تم الاسترجاع');renderHist()}catch(e){alert('ملف غير صالح')}};r.readAsText(f)}
 
-// التقطيع التلقائي للوجو المرفق وحفظه
+// تضمين اللوجو المرفق تلقائياً كرمز Base64 داخل التخزين المحلي للموقع
 (function(){
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
@@ -314,7 +332,7 @@ function restore(inp){const f=inp.files[0];if(!f)return;const r=new FileReader()
     ctx.drawImage(img, 0, 0);
     localStorage.setItem('company_logo', canvas.toDataURL('image/png'));
   };
-  img.src = 'لوجو.jpg';
+  img.src = 'لوجو_2.jpg';
 })();
 
 build();
