@@ -3,47 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="theme-color" content="#2e7d32">
+<meta name="theme-color" content="#286b35">
 <link rel="manifest" href="manifest.json">
-<title>منسق ميداني – إيميرالد</title>
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>منسق ميداني – إميرالد</title>
 <style>
+:root{--g:#286b35;--g2:#e8f1ea;--g3:#cfe3d3}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f4f9f4;color:#1d2b36;padding-bottom:80px}
-header{background:#2e7d32;color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
-header h1{margin:0;font-size:18px}
-nav{display:flex;background:#fff;border-bottom:1px solid #c8e6c9;position:sticky;top:48px;z-index:4}
-nav button{flex:1;padding:12px 4px;border:0;background:none;font-size:14px;font-family:inherit;color:#333}
-nav button.on{border-bottom:3px solid #2e7d32;color:#2e7d32;font-weight:bold}
-.page{display:none;padding:12px}.page.on{display:block}
-.card{background:#fff;border-radius:10px;padding:12px;margin-bottom:12px;box-shadow:0 1px 3px rgba(46,125,50,0.15);border:1px solid #e8f5e9}
-label{display:block;font-size:13px;color:#2e7d32;margin:8px 0 4px;font-weight:bold}
-input,select,textarea{width:100%;padding:10px;border:1px solid #c8e6c9;border-radius:8px;font-size:15px;font-family:inherit}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f1f5f2;color:#1d2b22;padding-bottom:80px}
+.top{background:#fff;border-bottom:4px solid var(--g);padding:4px 8px 0}
+.top img{display:block;width:100%;max-width:560px;margin:0 auto}
+nav{display:flex;background:#fff;border-bottom:1px solid #cfd9d1;position:sticky;top:0;z-index:4}
+nav button{flex:1;padding:13px 4px;border:0;background:none;font-size:14px;font-family:inherit;color:#445}
+nav button.on{border-bottom:3px solid var(--g);color:var(--g);font-weight:bold}
+.page{display:none;padding:12px;max-width:640px;margin:0 auto}.page.on{display:block}
+.card{background:#fff;border-radius:10px;padding:12px;margin-bottom:12px;box-shadow:0 1px 3px #0002}
+label{display:block;font-size:13px;color:#556;margin:8px 0 4px}
+input,select,textarea{width:100%;padding:10px;border:1px solid #bccabf;border-radius:8px;font-size:15px;font-family:inherit;background:#fff}
 textarea{min-height:60px}
-details{background:#fff;border-radius:10px;margin-bottom:10px;box-shadow:0 1px 3px rgba(46,125,50,0.15);border:1px solid #e8f5e9}
-summary{padding:14px;font-weight:bold;font-size:15px;color:#2e7d32;list-style:none;cursor:pointer}
-summary .cnt{float:left;font-weight:normal;font-size:12px;color:#558b2f}
-.item{padding:10px 12px;border-top:1px solid #e8f5e9}
+details{background:#fff;border-radius:10px;margin-bottom:10px;box-shadow:0 1px 3px #0002}
+summary{padding:14px;font-weight:bold;font-size:15px;color:var(--g);list-style:none}
+summary .cnt{float:left;font-weight:normal;font-size:12px;color:#777}
+.item{padding:10px 12px;border-top:1px solid #e3ece5}
 .item p{margin:0 0 6px;font-size:13px;color:#334}
 .row{display:flex;gap:6px}
-.row textarea{flex:1}
-.mic{width:44px;border:0;border-radius:8px;background:#e8f5e9;color:#2e7d32;font-size:20px}
-.mic.rec{background:#e53935;color:#fff}
-.btn{display:block;width:100%;padding:14px;border:0;border-radius:10px;font-size:16px;font-family:inherit;margin-top:10px;background:#2e7d32;color:#fff;font-weight:bold;cursor:pointer}
-.btn.sec{background:#fff;color:#2e7d32;border:2px solid #2e7d32}
-.btn.red{background:#c62828;color:#fff}
-.small{font-size:12px;color:#558b2f}
-table.att{width:100%;font-size:11px;border-collapse:collapse}
-table.att td,table.att th{border:1px solid #c8e6c9;padding:4px}
-table.att th{background:#e8f5e9;color:#2e7d32}
-table.att input{padding:4px;font-size:13px;text-align:center}
-.hist{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e8f5e9;font-size:14px}
-.img-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.img-preview div{position:relative}
-.img-preview img{width:70px;height:70px;object-fit:cover;border-radius:6px;border:1px solid #c8e6c9}
+.row textarea,.row input{flex:1}
+.mic{width:44px;border:0;border-radius:8px;background:var(--g2);font-size:20px}
+.mic.rec{background:#e53935}
+.btn{display:block;width:100%;padding:14px;border:0;border-radius:10px;font-size:16px;font-family:inherit;margin-top:10px;background:var(--g);color:#fff}
+.btn.sec{background:#fff;color:var(--g);border:2px solid var(--g)}
+.small{font-size:12px;color:#778}
+.attgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0 10px;background:var(--g2);padding:8px;border-radius:8px}
+.attgrid span{display:block;font-size:11px;color:#345;margin-bottom:2px}
+.attgrid input{padding:6px;text-align:center}
+.ph{background:var(--g2);border-radius:8px;padding:6px;margin-top:8px}
+.ph img{width:100%;border-radius:6px;display:block;margin-bottom:6px}
+.hist{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e3ece5;font-size:14px}
+.hist button{border:0;background:var(--g2);border-radius:6px;padding:6px 10px;font-size:16px}
+#busy{display:none;position:fixed;inset:0;background:#000a;color:#fff;align-items:center;justify-content:center;font-size:18px;z-index:20}
 </style>
 </head>
 <body>
-<header><h1>📋 إيميرالد – منسق ميداني لتقارير الزيارات</h1></header>
+<header class="top"><img src="banner.png" alt="إميرالد للتطوير التعليمي وإدارة المدارس"></header>
 <nav>
 <button id="t1" class="on" onclick="go(1)">زيارة اليوم</button>
 <button id="t2" onclick="go(2)">السجل</button>
@@ -58,27 +60,31 @@ table.att input{padding:4px;font-size:13px;text-align:center}
   <select id="schoolSel" onchange="schoolChange()"></select>
   <input id="schoolOther" placeholder="اكتب اسم المدرسة" style="display:none;margin-top:6px">
   <label>التاريخ</label><input id="date" type="date">
-  <label>وقت الزيارة</label>
+  <label>وقت الزيارة (من – إلى)</label>
   <div class="row"><input id="from" type="time" value="08:00"><input id="to" type="time" value="15:00"></div>
  </div>
  <div id="sections"></div>
  <div class="card">
-  <b>جدول الحضور والانصراف</b>
-  <p class="small">اكتب الأرقام فقط</p>
-  <div id="att"></div>
+  <b>أحداث وما يستجد خلال الزيارة</b>
+  <div class="row" style="margin-top:6px"><textarea id="events" oninput="save()"></textarea><button class="mic" onclick="mic('events',this)">🎤</button></div>
  </div>
- <div class="card">
-  <b>ما يستجد من أعمال أو أحداث خلال الزيارة</b>
-  <div class="row"><textarea id="events" oninput="save()"></textarea><button class="mic" onclick="mic('events',this)">🎤</button></div>
- </div>
-
  <div class="card">
   <b>ألبوم الصور من الزيارة</b>
-  <p class="small">قم برفع صور الزيارة هنا لتظهر منظمة (3 صور في كل صف) في نهاية التقرير</p>
-  <input type="file" accept="image/*" multiple id="visitImgsInput" onchange="handleVisitImgs(this)" style="margin-top:6px;font-size:13px">
-  <div class="img-preview" id="visitImgsPreview"></div>
+  <p class="small">الصور بتتصغر تلقائيا وبتتحفظ على الموبايل. اكتب تعليق تحت كل صورة (اختياري).</p>
+  <div class="row">
+   <button class="btn sec" style="margin-top:0" onclick="$('pc').click()">📷 التقاط صورة</button>
+   <button class="btn sec" style="margin-top:0" onclick="$('pf').click()">🖼️ من المعرض</button>
+  </div>
+  <input type="file" id="pc" accept="image/*" capture="environment" style="display:none" onchange="addPhotos(this.files)">
+  <input type="file" id="pf" accept="image/*" multiple style="display:none" onchange="addPhotos(this.files)">
+  <div id="phmsg" class="small"></div>
+  <div id="photos"></div>
  </div>
-
+ <div class="card">
+  <b>بيانات الاعتماد (تظهر في التوقيعات)</b>
+  <label>يعتمد</label><input id="approver" onchange="saveCfg()">
+  <label>مسئول القطاع</label><input id="sector" onchange="saveCfg()">
+ </div>
  <button class="btn" onclick="exportDoc()">📄 إنهاء اليوم وتصدير ملف وورد</button>
  <button class="btn sec" onclick="newVisit()">➕ زيارة جديدة</button>
 </div>
@@ -91,219 +97,117 @@ table.att input{padding:4px;font-size:13px;text-align:center}
  <div class="card">
   <label>الشهر</label><input id="month" type="month">
   <button class="btn" onclick="exportMonth()">📊 تصدير التقرير الشهري (وورد)</button>
-  <p class="small">يجمع كل زيارات الشهر المحدد.</p>
+  <p class="small">يجمع كل زيارات الشهر المحدد: لكل بند، ردود كل مدرسة وتاريخ الزيارة.</p>
  </div>
  <div class="card">
   <b>نسخة احتياطية</b>
+  <p class="small">النسخة بتحفظ النصوص فقط (من غير الصور).</p>
   <button class="btn sec" onclick="backup()">حفظ نسخة من البيانات</button>
-  <button class="btn sec" onclick="document.getElementById('rf').click()">استرجاع نسخة</button>
+  <button class="btn sec" onclick="$('rf').click()">استرجاع نسخة</button>
   <input type="file" id="rf" accept=".json" style="display:none" onchange="restore(this)">
  </div>
 </div>
+<div id="busy">جاري تجهيز الملف...</div>
 
+<script src="docx.js"></script>
+<script src="data.js"></script>
+<script src="builder.js"></script>
 <script>
-const SECTIONS = [
-  {
-    "id": "security",
-    "title": "متابعة الأمن",
-    "items": [
-      "افراد الامن والمشرف متواجدين فى اماكنهم والباب الرئيسي للمدرسه مغلق",
-      "تواجد فرد امن نسائى بالمدرسه ودورها مفعل داخل المدرسه",
-      "مراجعه دفتر العاملين بالامن ومطابقتها بدفتر الحضور والانصراف",
-      "مراجعه دفتر الزائرين الخاص بالمدرسه",
-      "مراجعه عدد افراد الامن بالورديات المختلفه",
-      "التزام افراد الامن بالزى والمظهر العام",
-      "تعاون افراد الامن والمشرف مع اداره المدرسه وتنفيذ التعليمات والمهام المطلوبه منهم"
-    ]
-  },
-  {
-    "id": "hr",
-    "title": "متابعة شئون العاملين والحضور والانصراف",
-    "items": [
-      "متابعة دفتر حضور وانصراف العاملين وبياناته (انظر جدول الحضور أدناه)",
-      "مراجعه دفاتر الحضور والانصراف الخاصه بالمدرسة (عاملين + امن + خدمات)",
-      "مراجعه والاطلاع على دفاتر الاذونات والاجازات دفتر 68 ومطابقته بدفتر الحضور",
-      "مراجعه سجلات التحقيقات الداخليه بالمدرسة وسلامة اجراءات التحقيق",
-      "مراجعه مصوغات تعيين او اوراق استقالات من المدرسة",
-      "استلام مستندات استعاضات طبيه من المدرسه + استعاضات اجازة وضع",
-      "موقف تجديد العقود والتعاقدات الجديده للعاملين بالمدارس"
-    ]
-  },
-  {
-    "id": "cleaning",
-    "title": "متابعة أعمال النظافة",
-    "items": [
-      "الاماكن التى تم متابعة النظافه بها فى المدرسة",
-      "التزام عمال الخدمات بالزى والمظهر العام",
-      "عدد عمال الخدمات وتواجد مشرف الخدمات",
-      "تواجد الخامات الخاصه بالنظافه فى الاماكن المخصصه لها",
-      "مستوى النظافه فى المدرسه خلال الزياره",
-      "متابعه تواجد افراد الخدمات امام الحمامات المخصصه لهم ووجود خطه عمل بالمدرسه وتنفيذها"
-    ]
-  },
-  {
-    "id": "store",
-    "title": "متابعة أعمال المخزن",
-    "items": [
-      "عدد اذون الاضافه التى تم مراجعتها واستلامها بالارقام خلال الزياره",
-      "عدد اذون الصرف التى تم مراجعتها واستلامها بالارقام خلال الزياره",
-      "مراجعه استلام اى توريدات بالمدرسة مع ذكر جهة التوريد خلال الزياره",
-      "وسلامة الاجراءات من (محضر فحص + اذون اضافه + اى مستندات تكميليه) سواء توريدات اميرالد او توريدات حكوميه",
-      "مراجعه المخازن والتاكد من سلامة التخزين بها",
-      "هل تم عمل جرد عشوائى او جرد كلى للمخازن اثناء الزياره"
-    ]
-  },
-  {
-    "id": "maint",
-    "title": "متابعة أعمال الصيانة",
-    "items": [
-      "مراجعه احتياج المدرسة الى اعمال صيانه خاصه (سباكه + كهرباء + نجاره)",
-      "مراجعه حاله ماكينه التصوير والطابعات بالمدارس",
-      "مراجعه حاله الكاميرات بالمدارس",
-      "مراجعه حاله الشاشات التفاعليه بالمدارس",
-      "مراجعه استهلاك المدارس من ورق التصوير وتواجد سجل التصوير والتسجيل به بشكل يومى بالمدرسة"
-    ]
-  },
-  {
-    "id": "advance",
-    "title": "متابعة السلفة",
-    "items": [
-      "مراجعه ارسال اى طلبات احتياج اثناء الزياره مع كتابه اسم المدارس",
-      "مراجعه احضار اى موافقات لطلبات احتياج خلال الزياره مع كتابه اسماء المدارس",
-      "مراجعه مستندات المشتريات والتاكيد من سلامتها خلال الزياره",
-      "استلام السلفه خلال الزياره"
-    ]
-  },
-  {
-    "id": "agri",
-    "title": "متابعة أعمال الزراعة",
-    "items": [
-      "مراجعه حضور وانصراف عامل الزراعه من واقع دفاتر الامن بالمدرسة",
-      "مراجعه حاله الزراعات بالمدرسة خلال الزياره",
-      "مراجعه حاله النجيله خلال الزياره",
-      "مراجعه احتياج المدرسة الى تهذيب وتقليم الاشجار"
-    ]
-  },
-  {
-    "id": "comm",
-    "title": "التواصل مع الإدارات الأخرى",
-    "items": [
-      "هل تم ارسال اى طلبات اجازه الى الشركة مع كتابة اسماء المدارس",
-      "عدد الموافقات على طلبات الاجازات المرسله من الشركة",
-      "هل تم ارسال طلب مفردات مرتب الى الشركه مع كتابة اسماء المدارس",
-      "هل تم ارسال اى شهادات خبره مع كتابة اسماء المدارس",
-      "عدد مفردات المرتب وشهادات الخبره المرسله من الشركه للمدارس",
-      "هل تم ارسال اى استقالات الى الشركه مع كتابة اسماء المدارس",
-      "عدد الموافقات الخاصه بالاستقالات المرسله من الشركه للمدارس",
-      "هل تم تسليم اى مستحقات طبيه شيكات الى المدارس",
-      "هل تم تسليم اى كارنيهات طبيه الى المدارس"
-    ]
-  }
-];
-
-const SCHOOLS = ["الأنفوشي - الإسكندرية", "زهراء مدينة نصر - القاهرة", "القاهرة الجديدة - التجمع الخامس", "دمياط الجديدة", "سمنود - الغربية", "كفر الشيخ", "بني عبيد - الدقهلية", "جمصة - الدقهلية", "تمي الأمديد - الدقهلية", "كفر صقر - الشرقية", "الزقازيق - الشرقية", "العاشر من رمضان - الشرقية", "سنورس - الفيوم", "الفيوم الجديدة", "بني سويف", "المنيا", "الغردقة - البحر الأحمر"];
-const ATT = ["عدد العاملين","عدد الحضور","وضع","مرض","عارضة/اعتيادي","تدريب/مأمورية","تأخيرات","اذون","بدل تناوب","اليابان","غياب"];
-let cur = null;
-const $ = id => document.getElementById(id);
-const store = () => JSON.parse(localStorage.getItem('visits')||'{}');
-const putStore = o => localStorage.setItem('visits', JSON.stringify(o));
-const uid = () => 'v'+Date.now()+Math.random().toString(36).slice(2,7);
+const {SECTIONS,SCHOOLS,ATT}=APPDATA;
+const $=id=>document.getElementById(id);
+const store=()=>{try{return JSON.parse(localStorage.getItem('visits')||'{}')}catch(e){return {}}};
+const putStore=o=>localStorage.setItem('visits',JSON.stringify(o));
+const uid=()=>'v'+Date.now()+Math.random().toString(36).slice(2,7);
+const DEF={approver:'أ/ حمدى رحيل',sector:'ماجد رفعت'};
+const cfgGet=()=>{try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('cfg')||'{}'))}catch(e){return Object.assign({},DEF)}};
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const safe=s=>String(s||'').replace(/[\\/:*?"<>|]/g,'').trim().replace(/\s+/g,'_');
+let cur=null;
 
 function go(n){[1,2,3].forEach(i=>{$('p'+i).classList.toggle('on',i==n);$('t'+i).classList.toggle('on',i==n)});if(n==2)renderHist()}
 
+/* ---------- الصور (IndexedDB) ---------- */
+let _db;
+function db(){return _db||(_db=new Promise((res,rej)=>{const r=indexedDB.open('coord',1);r.onupgradeneeded=()=>{const s=r.result.createObjectStore('photos',{keyPath:'id'});s.createIndex('vid','vid')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}))}
+function tx(mode,fn){return db().then(d=>new Promise((res,rej)=>{const t=d.transaction('photos',mode);const out=fn(t.objectStore('photos'));t.oncomplete=()=>res(out&&out.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)}))}
+const putPhoto=p=>tx('readwrite',s=>s.put(p));
+const delPhotoDb=id=>tx('readwrite',s=>s.delete(id));
+const getPhoto=id=>tx('readonly',s=>s.get(id));
+const getPhotos=vid=>tx('readonly',s=>s.index('vid').getAll(vid)).then(a=>(a||[]).sort((x,y)=>x.n-y.n));
+function compress(file){return new Promise((res,rej)=>{const url=URL.createObjectURL(file);const im=new Image();
+ im.onload=()=>{const M=1280;let w=im.naturalWidth,h=im.naturalHeight;const r=Math.min(1,M/Math.max(w,h));w=Math.round(w*r);h=Math.round(h*r);
+  const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(im,0,0,w,h);
+  c.toBlob(b=>{URL.revokeObjectURL(url);b?res({blob:b,w,h}):rej(new Error('blob'))},'image/jpeg',0.72)};
+ im.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('img'))};im.src=url})}
+async function addPhotos(files){
+  if(!files||!files.length)return;const vid=cur;$('phmsg').textContent='جاري تجهيز الصور...';let k=0,bad=0;
+  for(const f of Array.from(files)){try{const c=await compress(f);await putPhoto({id:vid+'_p'+Date.now()+Math.random().toString(36).slice(2,6),vid,n:Date.now()+k++,caption:'',blob:c.blob,w:c.w,h:c.h})}catch(e){bad++}}
+  $('phmsg').textContent=bad?('تعذر تجهيز '+bad+' صورة'):'';$('pf').value='';$('pc').value='';if(cur===vid)renderPhotos();
+}
+let urls=[];
+async function renderPhotos(){
+  urls.forEach(u=>URL.revokeObjectURL(u));urls=[];const box=$('photos');if(!cur){box.innerHTML='';return}
+  let list=[];try{list=await getPhotos(cur)}catch(e){box.innerHTML='<p class="small">تعذر قراءة الصور</p>';return}
+  box.innerHTML=list.length?list.map((p,i)=>{const u=URL.createObjectURL(p.blob);urls.push(u);
+   return `<div class="ph"><img src="${u}" alt=""><div class="row"><input placeholder="${i+1} – متابعه (تعليق اختياري)" value="${esc(p.caption)}" onchange="capPhoto('${p.id}',this.value)"><button class="mic" onclick="rmPhoto('${p.id}')">🗑</button></div></div>`}).join(''):'<p class="small">لا توجد صور بعد</p>';
+}
+async function capPhoto(id,v){const p=await getPhoto(id);if(p){p.caption=v;await putPhoto(p)}}
+async function rmPhoto(id){if(!confirm('حذف الصورة؟'))return;await delPhotoDb(id);renderPhotos()}
+
+/* ---------- بناء الشاشة ---------- */
+function attHtml(){return '<div class="attgrid">'+ATT.map((a,i)=>`<div><span>${a}</span><input id="a_${i}" type="number" inputmode="numeric" min="0" oninput="save()"></div>`).join('')+'</div>'}
 function build(){
-  const sel=$('schoolSel');
-  sel.innerHTML='<option value="">اختر المدرسة...</option>'+SCHOOLS.map(s=>`<option>${s}</option>`).join('')+'<option value="__o">مدرسة أخرى (اكتب الاسم)</option>';
+  $('schoolSel').innerHTML='<option value="">اختر المدرسة...</option>'+SCHOOLS.map(s=>`<option>${s}</option>`).join('')+'<option value="__o">مدرسة أخرى (اكتب الاسم)</option>';
   let h='';
   SECTIONS.forEach(sec=>{
     h+=`<details><summary>${sec.title}<span class="cnt" id="c_${sec.id}"></span></summary>`;
     sec.items.forEach((it,i)=>{
-      h+=`<div class="item"><p>${i+1}- ${it}</p><div class="row"><textarea id="f_${sec.id}_${i}" oninput="save()"></textarea><button class="mic" onclick="mic('f_${sec.id}_${i}',this)">🎤</button></div></div>`;
+      h+=`<div class="item"><p>${i+1}- ${it}</p>`;
+      if(sec.id==='hr'&&i===0)h+=attHtml();
+      h+=`<div class="row"><textarea id="f_${sec.id}_${i}" oninput="save()"></textarea><button class="mic" onclick="mic('f_${sec.id}_${i}',this)">🎤</button></div></div>`;
     });
     h+='</details>';
   });
   $('sections').innerHTML=h;
-  $('att').innerHTML='<table class="att"><tr>'+ATT.map(a=>`<th>${a}</th>`).join('')+'</tr><tr>'+ATT.map((a,i)=>`<td><input id="a_${i}" type="number" inputmode="numeric" oninput="save()"></td>`).join('')+'</tr></table>';
   ['emp','job','date','from','to','schoolOther'].forEach(i=>$(i).addEventListener('input',save));
-  $('emp').value=localStorage.getItem('emp')||'';
+  const c=cfgGet();$('approver').value=c.approver;$('sector').value=c.sector;
   $('month').value=new Date().toISOString().slice(0,7);
   newVisit(true);
 }
-
-function schoolChange(){ $('schoolOther').style.display=$('schoolSel'].value=='__o'?'block':'none'; save(); }
-function schoolName(){ return $('schoolSel'].value=='__o'?$('schoolOther').value:$('schoolSel'].value; }
-
-function handleVisitImgs(input){
-  const files = input.files;
-  if(!files.length) return;
-  if(!cur) return;
-  const o = store();
-  if(!o[cur]) o[cur] = collect();
-  if(!o[cur].visitImgs) o[cur].visitImgs = [];
-
-  let loaded = 0;
-  Array.from(files).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      o[cur].visitImgs.push(e.target.result);
-      loaded++;
-      if(loaded === files.length){
-        putStore(o);
-        renderVisitImgs(o[cur].visitImgs);
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-function renderVisitImgs(imgs){
-  const container = $('visitImgsPreview');
-  if(!container) return;
-  container.innerHTML = (imgs||[]).map((src, i) => `<div><img src="${src}"><button onclick="delVisitImg(${i})" style="position:absolute;top:0;right:0;background:red;color:#fff;border:0;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer">×</button></div>`).join('');
-}
-
-function delVisitImg(idx){
-  const o = store();
-  if(o[cur] && o[cur].visitImgs){
-    o[cur].visitImgs.splice(idx, 1);
-    putStore(o);
-    renderVisitImgs(o[cur].visitImgs);
-  }
-}
-
+function saveCfg(){localStorage.setItem('cfg',JSON.stringify({approver:$('approver').value,sector:$('sector').value}))}
+function schoolChange(){$('schoolOther').style.display=$('schoolSel').value=='__o'?'block':'none';save()}
+function schoolName(){return $('schoolSel').value=='__o'?$('schoolOther').value:$('schoolSel').value}
 function collect(){
-  const oldImgs = (store()[cur]||{}).visitImgs || [];
-  const d={id:cur,emp:$('emp').value,job:$('job').value,school:schoolName(),schoolSel:$('schoolSel'].value,date:$('date').value,from:$('from').value,to:$('to').value,events:$('events').value,att:ATT.map((a,i)=>$('a_'+i).value),f:{}, visitImgs:oldImgs};
-  SECTIONS.forEach(s=>s.items.forEach((it,i)=>{d.f[s.id+'_'+i]=$('f_'+s.id+'_'+i).value}));
-  return d;
+  const d={id:cur,emp:$('emp').value,job:$('job').value,school:schoolName(),schoolSel:$('schoolSel').value,date:$('date').value,from:$('from').value,to:$('to').value,events:$('events').value,att:ATT.map((a,i)=>$('a_'+i).value),f:{}};
+  SECTIONS.forEach(s=>s.items.forEach((it,i)=>{d.f[s.id+'_'+i]=$('f_'+s.id+'_'+i).value}));return d;
 }
-
 function fill(d){
   $('emp').value=d.emp||localStorage.getItem('emp')||'';$('job').value=d.job||'منسق اقليمي';
   $('schoolSel').value=d.schoolSel||'';$('schoolOther').value=d.schoolSel=='__o'?d.school:'';schoolChange();
   $('date').value=d.date||new Date().toISOString().slice(0,10);$('from').value=d.from||'08:00';$('to').value=d.to||'15:00';
-  $('events').value=d.events||'';
-  ATT.forEach((a,i)=>$('a_'+i).value=(d.att||[])[i]||'');
+  $('events').value=d.events||'';ATT.forEach((a,i)=>$('a_'+i).value=(d.att||[])[i]||'');
   SECTIONS.forEach(s=>s.items.forEach((it,i)=>{$('f_'+s.id+'_'+i).value=(d.f||{})[s.id+'_'+i]||''}));
-  renderVisitImgs(d.visitImgs || []);
-  counts();
+  counts();renderPhotos();
 }
-
 function counts(){SECTIONS.forEach(s=>{let n=0;s.items.forEach((it,i)=>{if($('f_'+s.id+'_'+i).value.trim())n++});$('c_'+s.id).textContent=n+'/'+s.items.length})}
-function save(){ if(!cur)return; const o=store(); o[cur]=collect(); putStore(o); localStorage.setItem('emp',$('emp').value); localStorage.setItem('last',cur); counts(); }
+function save(){if(!cur)return;const o=store();o[cur]=collect();putStore(o);localStorage.setItem('emp',$('emp').value);localStorage.setItem('last',cur);counts()}
 function newVisit(first){
-  const last=localStorage.getItem('last'); const o=store();
+  const last=localStorage.getItem('last'),o=store();
   if(first&&last&&o[last]){cur=last;fill(o[last]);return}
-  cur=uid(); fill({}); save(); go(1); window.scrollTo(0,0);
+  cur=uid();fill({});save();go(1);window.scrollTo(0,0);
 }
 function openVisit(id){cur=id;localStorage.setItem('last',id);fill(store()[id]);go(1)}
-function delVisit(id){if(!confirm('حذف هذه الزيارة؟'))return;const o=store();delete o[id];putStore(o);if(cur==id)newVisit();renderHist()}
+async function delVisit(id){
+  if(!confirm('حذف هذه الزيارة وصورها؟'))return;
+  try{for(const p of await getPhotos(id))await delPhotoDb(p.id)}catch(e){}
+  const o=store();delete o[id];putStore(o);if(cur==id)newVisit();renderHist();
+}
 function renderHist(){
   const v=Object.values(store()).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-  $('hist').innerHTML=v.length?v.map(x=>`<div class="hist"><span onclick="openVisit('${x.id}')">${x.date||''} – ${x.school||'بدون مدرسة'}</span><span><button onclick="exportDoc('${x.id}')">📄</button> <button onclick="delVisit('${x.id}')">🗑</button></span></div>`).join(''):'<p class="small">لا توجد زيارات بعد</p>';
+  $('hist').innerHTML=v.length?v.map(x=>`<div class="hist"><span onclick="openVisit('${x.id}')">${x.date||''} – ${esc(x.school)||'بدون مدرسة'}</span><span><button onclick="exportDoc('${x.id}')">📄</button> <button onclick="delVisit('${x.id}')">🗑</button></span></div>`).join(''):'<p class="small">لا توجد زيارات بعد</p>';
 }
 
-/* الإدخال الصوتي */
+/* ---------- الإدخال الصوتي ---------- */
 let rec=null;
 function mic(id,btn){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -311,128 +215,38 @@ function mic(id,btn){
   if(rec){rec.stop();return}
   rec=new SR();rec.lang='ar-EG';rec.interimResults=false;btn.classList.add('rec');
   rec.onresult=e=>{const t=e.results[0][0].transcript;$(id).value+=($(id).value?' ':'')+t;save()};
-  rec.onend=()=>{btn.classList.remove('rec');rec=null};
-  rec.onerror=()=>{btn.classList.remove('rec');rec=null};
-  rec.start();
+  rec.onend=()=>{btn.classList.remove('rec');rec=null};rec.onerror=()=>{btn.classList.remove('rec');rec=null};rec.start();
 }
 
-/* تصدير وورد: ملف .doc بصيغة HTML مع اللوجو بحدود صفحة وألبوم صور (3 صور بجانب بعض) */
-const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-
-const wrap=body=>`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" dir="rtl"><head><meta charset="utf-8"><style>
-@page{size:A4;margin:1.5cm}
-body{font-family:Arial;direction:rtl;border:2px solid #2e7d32;padding:15px;}
-table{border-collapse:collapse;width:100%}
-td,th{border:1px solid #2e7d32;padding:6px;font-size:11pt;vertical-align:top}
-th{background:#e8f5e9;color:#2e7d32}
-h1,h2{text-align:center;color:#2e7d32}
-.logo{text-align:center;margin-bottom:15px}.logo img{max-height:75px}
-</style></head><body dir="rtl">${body}</body></html>`;
-
-function dl(name,html){
-  const b=new Blob(['\ufeff',html],{type:'application/msword'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'.doc';document.body.appendChild(a);a.click();a.remove();
-}
-
-function visitHtml(d){
-  const dt=d.date?new Date(d.date):null;const day=dt?DAYS[dt.getDay()]:'';
-  let logoHtml = '';
-  const logoSrc = localStorage.getItem('company_logo') || '';
-  if(logoSrc){
-    logoHtml = `<div class="logo"><img src="${logoSrc}" alt="إيميرالد"></div>`;
-  }
-
-  let h=`${logoHtml}<h1>التقرير اليومي</h1><table><tr><td><b>اسم المدرسة:</b> ${esc(d.school)}</td><td><b>الوظيفة:</b> ${esc(d.job)}</td><td><b>اسم الموظف:</b> ${esc(d.emp)}</td></tr><tr><td><b>التاريخ:</b> ${esc(d.date)}</td><td><b>اليوم:</b> ${day}</td><td><b>الوقت:</b> من ${esc(d.from)} الى ${esc(d.to)}</td></tr></table><br>`;
-  
-  SECTIONS.forEach(sec=>{
-    h+=`<h2>${sec.title}</h2><table><tr><th style="width:8%">م</th><th>البند</th><th style="width:35%">الردود والملاحظات</th></tr>`;
-    sec.items.forEach((it,i)=>{
-      h+=`<tr><td>${i+1}</td><td>${esc(it)}</td><td>${esc((d.f||{})[sec.id+'_'+i])}</td></tr>`;
-    });
-    h+='</table><br>';
-    if(sec.id=='hr'&&(d.att||[]).some(x=>x)){
-      h+='<table><tr>'+ATT.map(a=>`<th>${a}</th>`).join('')+'</tr><tr>'+ATT.map((a,i)=>`<td>${esc((d.att||[])[i])}</td>`).join('')+'</tr></table><br>';
-    }
-  });
-
-  h+=`<h2>ما يستجد من أعمال أو أحداث خلال الزيارة</h2><p>${esc(d.events)||'-'}</p><br>`;
-
-  // ألبوم الصور في النهاية: 3 صور في كل صف (جدول منسق للورد)
-  if(d.visitImgs && d.visitImgs.length > 0){
-    h+=`<h2>ألبوم الصور من الزيارة</h2>`;
-    h+=`<table style="border:none;">`;
-    for(let i=0; i<d.visitImgs.length; i+=3){
-      h+=`<tr>`;
-      for(let j=0; j<3; j++){
-        const idx = i + j;
-        h+=`<td style="border:none; text-align:center; width:33%;">`;
-        if(idx < d.visitImgs.length){
-          h+=`<img src="${d.visitImgs[idx]}" style="width:160px;height:120px;object-fit:cover;border:1px solid #2e7d32;border-radius:4px;margin-bottom:4px;"><br><span style="font-size:10pt;color:#333;">متابعة ${idx+1}</span>`;
-        } else {
-          h+=`&nbsp;`;
-        }
-        h+=`</td>`;
-      }
-      h+=`</tr>`;
-    }
-    h+=`</table><br>`;
-  }
-
-  h+=`<table><tr><td><b>مقدم التقرير:</b> ${esc(d.emp)}<br><br>التوقيع/</td><td><b>يعتمد:</b> مدير ادارة المنسق<br><br>التوقيع/</td></tr></table>`;
-  return h;
-}
-
-function exportDoc(id){
+/* ---------- التصدير ---------- */
+let AS=null;
+async function assets(){if(AS)return AS;const g=async u=>new Uint8Array(await (await fetch(u)).arrayBuffer());AS={banner:await g('banner.png'),footer:await g('footer-logo.png')};return AS}
+function busy(on){$('busy').style.display=on?'flex':'none'}
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+async function exportDoc(id){
   save();const d=id?store()[id]:collect();
   if(!d.school){alert('اختر المدرسة أولا');return}
-  dl('تقرير_'+d.school.replace(/\s+/g,'_')+'_'+d.date,wrap(visitHtml(d)));
+  busy(true);
+  try{
+    const photos=[];for(const p of await getPhotos(d.id))photos.push({data:new Uint8Array(await p.blob.arrayBuffer()),w:p.w,h:p.h,caption:p.caption});
+    const blob=await docx.Packer.toBlob(Builder.daily(d,photos,await assets(),cfgGet()));
+    download(blob,'تقرير_'+safe(d.school)+'_'+d.date+'.docx');
+  }catch(e){alert('حدث خطأ أثناء إنشاء الملف: '+e.message)}
+  busy(false);
 }
-
-function exportMonth(){
-  const m=$('month').value;const v=Object.values(store()).filter(x=>(x.date||'').startsWith(m)).sort((a,b)=>a.date.localeCompare(b.date));
+async function exportMonth(){
+  const m=$('month').value,v=Object.values(store()).filter(x=>(x.date||'').startsWith(m));
   if(!v.length){alert('لا توجد زيارات في هذا الشهر');return}
-  
-  let logoHtml = '';
-  const logoSrc = localStorage.getItem('company_logo') || '';
-  if(logoSrc){
-    logoHtml = `<div class="logo"><img src="${logoSrc}" alt="إيميرالد"></div>`;
-  }
-
-  let h=`${logoHtml}<h1>التقرير الشهري لفريق المنسقين عن شهر ${m}</h1><p>عدد الزيارات: ${v.length} – المدارس: ${[...new Set(v.map(x=>x.school))].map(esc).join('، ')}</p>`;
-  SECTIONS.forEach(sec=>{
-    h+=`<h2>${sec.title}</h2><table><tr><th style="width:5%">م</th><th style="width:30%">البند</th><th>ما تم رصده في الزيارات (المدرسة – التاريخ: الرد)</th></tr>`;
-    sec.items.forEach((it,i)=>{
-      const lines=v.map(x=>{const r=(x.f||{})[sec.id+'_'+i];return r&&r.trim()?`<b>${esc(x.school)}</b> – ${esc(x.date)}: ${esc(r)}`:null}).filter(Boolean);
-      h+=`<tr><td>${i+1}</td><td>${esc(it)}</td><td>${lines.join('<br>')||'-'}</td></tr>`;
-    });
-    h+='</table><br>';
-  });
-  const ev=v.filter(x=>x.events&&x.events.trim());
-  h+=`<h2>أحداث واجراءات خلال الزيارات</h2><p>${ev.map(x=>`<b>${esc(x.school)}</b> – ${esc(x.date)}: ${esc(x.events)}`).join('<br>')||'-'}</p>`;
-  h+='<h2>نقاط تحتاج اعادة النظر</h2><table>'+[1,2,3,4,5,6,7,8,9,10].map(n=>`<tr><td style="width:8%">${n}</td><td>&nbsp;</td></tr>`).join('')+'</table>';
-  dl('التقرير_الشهري_'+m,wrap(h));
+  busy(true);
+  try{download(await docx.Packer.toBlob(Builder.monthly(v,m,await assets(),cfgGet())),'التقرير_الشهري_'+m+'.docx')}
+  catch(e){alert('حدث خطأ أثناء إنشاء الملف: '+e.message)}
+  busy(false);
 }
-
-function backup(){const b=new Blob([JSON.stringify(store())],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='backup_'+new Date().toISOString().slice(0,10)+'.json';a.click()}
+function backup(){const b=new Blob([JSON.stringify(store())],{type:'application/json'});download(b,'backup_'+new Date().toISOString().slice(0,10)+'.json')}
 function restore(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{putStore({...store(),...JSON.parse(r.result)});alert('تم الاسترجاع');renderHist()}catch(e){alert('ملف غير صالح')}};r.readAsText(f)}
-
-// تضمين اللوجو المرفق تلقائياً كرمز Base64 داخل التخزين المحلي للموقع
-(function(){
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.onload = function(){
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
-    localStorage.setItem('company_logo', canvas.toDataURL('image/png'));
-  };
-  img.src = 'لوجو_2.jpg';
-})();
 
 build();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
 </script>
-</body></html>
+</body>
+</html>
