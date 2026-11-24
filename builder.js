@@ -10,7 +10,8 @@ const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','
 function t12(t) { if (!t) return ''; const [h0, m] = t.split(':').map(Number); const ap = h0 >= 12 ? 'م' : 'ص'; const h = h0 % 12 || 12; return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ' ' + ap; }
 function dmy(s) { const [y, m, d] = s.split('-'); return d + '-' + m + '-' + y; }
 function dayName(s) { const [y, m, d] = s.split('-').map(Number); return DAYS[new Date(y, m - 1, d).getDay()]; }
-function schoolFull(n) { n = (n || '').trim(); return /^المدرسة/.test(n) ? n : 'المدرسة المصرية اليابانية ' + n.split(' - ')[0]; }
+const LEGACY = ['الإسكندرية','القاهرة','الدقهلية','الغربية','الشرقية','الفيوم','البحر الأحمر'];
+function schoolFull(n) { n = (n || '').trim(); const m = n.match(/^(.*) - (.+)$/); if (m && LEGACY.indexOf(m[2].trim()) >= 0) n = m[1].trim(); return /المصرية اليابانية/.test(n) ? n : 'المدرسة المصرية اليابانية ' + n; }
 
 function R(text, o) {
   o = o || {}; const x = X();
@@ -32,7 +33,7 @@ const NONE = () => ({ style: X().BorderStyle.NONE, size: 0, color: 'FFFFFF' });
 function C(children, w, o) {
   o = o || {}; const x = X();
   return new x.TableCell({
-    width: { size: w, type: x.WidthType.DXA }, columnSpan: o.span, verticalAlign: o.va || x.VerticalAlign.CENTER,
+    width: { size: w, type: x.WidthType.DXA }, columnSpan: o.span, verticalMerge: o.vm, verticalAlign: o.va || x.VerticalAlign.CENTER,
     shading: o.fill ? { type: x.ShadingType.CLEAR, fill: o.fill, color: 'auto' } : undefined,
     margins: { top: 60, bottom: 60, left: o.ml == null ? 100 : o.ml, right: o.ml == null ? 100 : o.ml },
     borders: o.noBorder ? { top: NONE(), bottom: NONE(), left: NONE(), right: NONE() } : undefined,
@@ -153,40 +154,54 @@ function daily(d, photos, assets, cfg) {
   });
 }
 
-/* ---------- monthly report ---------- */
-function monthly(visits, ym, assets, cfg) {
-  const x = X(); cfg = cfg || {};
-  const [yy, mm] = ym.split('-').map(Number), cols = [700, 5800, 8898], W = cols[0] + cols[1] + cols[2];
-  const v = visits.slice().sort((a, b) => a.date.localeCompare(b.date));
-  const schools = [...new Set(v.map(s => s.school))];
-  const rows = [ROW([C([PC('م', { size: 22 })], cols[0], { fill: GRAY }), C([PC('بنود المتابعة', { size: 22 })], cols[1], { fill: GRAY }),
-    C([PC('ما تم رصده خلال الزيارات (المدرسة – التاريخ : الرد)', { size: 22 })], cols[2], { fill: GRAY })], { header: true, cantSplit: true })];
-  A.SECTIONS.forEach(sec => {
-    rows.push(ROW([C([PC(sec.title, { size: 24, color: 'FFFFFF' })], W, { span: 3, fill: GREEN })], { cantSplit: true }));
-    sec.items.forEach((it, i) => {
-      const lines = [];
-      v.forEach(s => { const r = (s.f || {})[sec.id + '_' + i]; if (r && r.trim()) lines.push(P(schoolFull(s.school).replace('المدرسة المصرية اليابانية ', '') + ' – \u202A' + dmy(s.date) + '\u202C : ' + r.trim().replace(/\s*\n\s*/g, ' / '), { size: 20 })); });
-      rows.push(ROW([C([PC(String(i + 1), { size: 20 })], cols[0]), C([P(it, { size: 20 })], cols[1]), C(lines.length ? lines : [PC('-', { size: 20 })], cols[2], { va: x.VerticalAlign.TOP })]));
+/* ---------- monthly report (template-based, A3 landscape) ---------- */
+function monthlyForm(tpl, ym, entry) {
+  const x = X(); entry = entry || {};
+  const [yy, mm] = ym.split('-').map(Number), M = MONTHS[mm - 1];
+  const cols = [900, 2300, 2800, 7200, 6500, 2410], W = cols.reduce((a, b) => a + b, 0), sz = 32;
+  const RS = x.VerticalMergeType.RESTART, CT = x.VerticalMergeType.CONTINUE, TOP = x.VerticalAlign.TOP;
+  const T = (t, o) => P(t, Object.assign({ size: sz, before: 40, after: 40 }, o || {}));
+  const rows = [
+    ROW([C([PC('التقرير الشهرى لفريق المنسقين عن شهر ' + M + ' ' + yy + 'م', { size: 68 })], W, { span: 6, fill: 'FFD966' })], { cantSplit: true, header: true }),
+    ROW(['م', 'اسم الملف', 'بنود الملف', 'ما تم انجازه', 'التفاصيل والاجراءات التى تمت', 'ملاحظات'].map((h, i) => C([PC(h, { size: 40 })], cols[i], { fill: 'B4C6E7' })), { cantSplit: true, header: true })
+  ];
+  tpl.forEach(f => {
+    const fill = f.num % 2 === 1 ? 'FFF2CC' : 'E2EFD9';
+    f.items.forEach((it, k) => {
+      const ans = (entry.a || {})[it.id] || [];
+      const qp = it.qs.map(q => T(q.replace(/\{M\}/g, M)));
+      const ap = [];
+      it.qs.forEach((q, i) => {
+        const lines = String(ans[i] || '').split(/\r?\n/).map(v => v.trim()).filter(Boolean);
+        if (lines.length) lines.forEach(l => ap.push(T(l))); else ap.push(T(''));
+      });
+      const note = (entry.n && entry.n[it.id] != null) ? entry.n[it.id] : (it.note || '');
+      const np = String(note).split(/\r?\n/).map(v => v.trim()).filter(Boolean).map(l => T(l));
+      const first = k === 0, vm = first ? RS : CT;
+      rows.push(ROW([
+        C(first ? [PC(String(f.num), { size: sz })] : [], cols[0], { fill, vm }),
+        C(first ? [PC(f.name, { size: sz })] : [], cols[1], { fill, vm }),
+        C([PC(it.name, { size: sz })], cols[2], { fill }),
+        C(qp, cols[3], { fill, va: TOP }), C(ap, cols[4], { fill, va: TOP }), C(np, cols[5], { fill, va: TOP })
+      ]));
     });
   });
-  const ev = [];
-  v.forEach(s => { if (s.events && s.events.trim()) ev.push(P(schoolFull(s.school).replace('المدرسة المصرية اليابانية ', '') + ' – \u202A' + dmy(s.date) + '\u202C : ' + s.events.trim().replace(/\s*\n\s*/g, ' / '), { size: 20 })); });
-  rows.push(ROW([C([PC('أحداث وإجراءات خلال الزيارات', { size: 24, color: 'FFFFFF' })], W, { span: 3, fill: GREEN })], { cantSplit: true }));
-  rows.push(ROW([C(ev.length ? ev : [PC('-', { size: 20 })], W, { span: 3, va: x.VerticalAlign.TOP })]));
-  const sw = [7699, 7699];
-  const children = [
-    new x.Paragraph({ alignment: x.AlignmentType.CENTER, spacing: { before: 120, after: 60 }, children: [R('التقرير الشهري لفريق المنسقين عن شهر ' + MONTHS[mm - 1] + ' ' + yy + 'م', { size: 30, underline: true })] }),
-    P('عدد الزيارات : ' + v.length + '      المدارس : ' + schools.map(s => schoolFull(s).replace('المدرسة المصرية اليابانية ', '')).join('، '), { size: 21, before: 80, after: 100 }),
-    TBL(rows, cols), SP(300),
-    TBL([ROW([C([P('مقدم التقرير :- ' + (v[0] && v[0].emp || ''), { size: 22 })], sw[0], { noBorder: true }), C([P('يعتمد :- ' + (cfg.approver || ''), { size: 22 })], sw[1], { noBorder: true })]),
-      ROW([C([P('التوقيع/', { size: 22, before: 160 })], sw[0], { noBorder: true }), C([P('التوقيع/', { size: 22, before: 160 })], sw[1], { noBorder: true })])], sw, { noBorder: true })
-  ];
+  const pts = entry.p || [], N = Math.max(10, pts.length);
+  for (let i = 0; i < N; i++) {
+    const first = i === 0, vm = first ? RS : CT;
+    rows.push(ROW([
+      C(first ? [PC('نقاط تحتاج اعادة النظر', { size: sz })] : [], cols[0] + cols[1], { span: 2, vm }),
+      C([PC(String(i + 1), { size: sz })], cols[2]),
+      C([T(pts[i] || '')], cols[3] + cols[4], { span: 2 }),
+      C([], cols[5])
+    ], { h: 560 }));
+  }
   return new x.Document({
-    creator: 'Emerald', title: 'التقرير الشهري', styles: { default: { document: { run: { font: 'Arial', size: 22 } } } },
-    sections: [{ properties: { page: { size: { width: 11906, height: 16838, orientation: x.PageOrientation.LANDSCAPE }, margin: { top: 1750, bottom: 1250, left: 720, right: 720, header: 280, footer: 380 } } },
-      headers: { default: header(assets, 1000) }, footers: { default: footer(assets) }, children }]
+    creator: 'Emerald', title: 'التقرير الشهري', styles: { default: { document: { run: { font: 'Arial', size: sz } } } },
+    sections: [{ properties: { page: { size: { width: 16838, height: 23811, orientation: x.PageOrientation.LANDSCAPE }, margin: { top: 850, bottom: 850, left: 850, right: 850 } } },
+      children: [TBL(rows, cols)] }]
   });
 }
 
-root.Builder = { daily, monthly, MONTHS };
+root.Builder = { daily, monthlyForm, MONTHS };
 })(typeof window !== 'undefined' ? window : globalThis);

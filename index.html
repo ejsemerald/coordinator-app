@@ -95,13 +95,25 @@ summary .cnt{float:left;font-weight:normal;font-size:12px;color:#777}
 
 <div id="p3" class="page">
  <div class="card">
-  <label>الشهر</label><input id="month" type="month">
-  <button class="btn" onclick="exportMonth()">📊 تصدير التقرير الشهري (وورد)</button>
-  <p class="small">يجمع كل زيارات الشهر المحدد: لكل بند، ردود كل مدرسة وتاريخ الزيارة.</p>
+  <label>الشهر</label><input id="month" type="month" onchange="buildMonth()">
+  <p class="small">سجّل أي معلومة في أي وقت خلال الشهر (استقالة، تعيين، صيانة...) وبتتحفظ تلقائيا. في آخر الشهر صدّر التقرير بنفس شكل تقريرك.</p>
+ </div>
+ <div id="mform"></div>
+ <div class="card"><b>نقاط تحتاج إعادة النظر</b><div id="mpoints"></div></div>
+ <button class="btn" onclick="exportMonth()">📊 تصدير التقرير الشهري (وورد)</button>
+ <div class="card" style="margin-top:12px">
+  <b>إدارة البنود</b>
+  <p class="small">القالب مبني على تقرير أكتوبر. تقدر تضيف بند جديد، أو تخفي بند مش محتاجه من جوه الملف.</p>
+  <label>الملف</label><select id="nf"></select>
+  <input id="nfn" placeholder="أو اكتب اسم ملف جديد" style="margin-top:6px">
+  <label>اسم البند</label><input id="nin">
+  <label>الخانات (سطر لكل سؤال)</label><textarea id="nqs"></textarea>
+  <button class="btn sec" onclick="addItem()">➕ إضافة البند</button>
+  <div id="hid"></div>
  </div>
  <div class="card">
   <b>نسخة احتياطية</b>
-  <p class="small">النسخة بتحفظ النصوص فقط (من غير الصور).</p>
+  <p class="small">النسخة بتحفظ النصوص والتقرير الشهري (من غير الصور).</p>
   <button class="btn sec" onclick="backup()">حفظ نسخة من البيانات</button>
   <button class="btn sec" onclick="$('rf').click()">استرجاع نسخة</button>
   <input type="file" id="rf" accept=".json" style="display:none" onchange="restore(this)">
@@ -157,7 +169,7 @@ async function rmPhoto(id){if(!confirm('حذف الصورة؟'))return;await del
 /* ---------- بناء الشاشة ---------- */
 function attHtml(){return '<div class="attgrid">'+ATT.map((a,i)=>`<div><span>${a}</span><input id="a_${i}" type="number" inputmode="numeric" min="0" oninput="save()"></div>`).join('')+'</div>'}
 function build(){
-  $('schoolSel').innerHTML='<option value="">اختر المدرسة...</option>'+SCHOOLS.map(s=>`<option>${s}</option>`).join('')+'<option value="__o">مدرسة أخرى (اكتب الاسم)</option>';
+  $('schoolSel').innerHTML='<option value="">اختر المدرسة...</option>'+SCHOOLS.slice().sort((a,b)=>a.localeCompare(b,'ar')).map(s=>`<option>${s}</option>`).join('')+'<option value="__o">مدرسة أخرى (اكتب الاسم)</option>';
   let h='';
   SECTIONS.forEach(sec=>{
     h+=`<details><summary>${sec.title}<span class="cnt" id="c_${sec.id}"></span></summary>`;
@@ -172,10 +184,11 @@ function build(){
   ['emp','job','date','from','to','schoolOther'].forEach(i=>$(i).addEventListener('input',save));
   const c=cfgGet();$('approver').value=c.approver;$('sector').value=c.sector;
   $('month').value=new Date().toISOString().slice(0,7);
-  newVisit(true);
+  newVisit(true);buildMonth();
 }
 function saveCfg(){localStorage.setItem('cfg',JSON.stringify({approver:$('approver').value,sector:$('sector').value}))}
-function schoolChange(){$('schoolOther').style.display=$('schoolSel').value=='__o'?'block':'none';save()}
+function schoolUI(){$('schoolOther').style.display=$('schoolSel').value=='__o'?'block':'none'}
+function schoolChange(){schoolUI();save()}
 function schoolName(){return $('schoolSel').value=='__o'?$('schoolOther').value:$('schoolSel').value}
 function collect(){
   const d={id:cur,emp:$('emp').value,job:$('job').value,school:schoolName(),schoolSel:$('schoolSel').value,date:$('date').value,from:$('from').value,to:$('to').value,events:$('events').value,att:ATT.map((a,i)=>$('a_'+i).value),f:{}};
@@ -183,7 +196,9 @@ function collect(){
 }
 function fill(d){
   $('emp').value=d.emp||localStorage.getItem('emp')||'';$('job').value=d.job||'منسق اقليمي';
-  $('schoolSel').value=d.schoolSel||'';$('schoolOther').value=d.schoolSel=='__o'?d.school:'';schoolChange();
+  if(d.schoolSel&&d.schoolSel!=='__o'&&!SCHOOLS.includes(d.schoolSel)){$('schoolSel').value='__o';$('schoolOther').value=d.school||d.schoolSel}
+  else{$('schoolSel').value=d.schoolSel||'';$('schoolOther').value=d.schoolSel=='__o'?d.school:''}
+  schoolUI();
   $('date').value=d.date||new Date().toISOString().slice(0,10);$('from').value=d.from||'08:00';$('to').value=d.to||'15:00';
   $('events').value=d.events||'';ATT.forEach((a,i)=>$('a_'+i).value=(d.att||[])[i]||'');
   SECTIONS.forEach(s=>s.items.forEach((it,i)=>{$('f_'+s.id+'_'+i).value=(d.f||{})[s.id+'_'+i]||''}));
@@ -214,7 +229,7 @@ function mic(id,btn){
   if(!SR){alert('استخدم ميكروفون الكيبورد للإملاء الصوتي');$(id).focus();return}
   if(rec){rec.stop();return}
   rec=new SR();rec.lang='ar-EG';rec.interimResults=false;btn.classList.add('rec');
-  rec.onresult=e=>{const t=e.results[0][0].transcript;$(id).value+=($(id).value?' ':'')+t;save()};
+  rec.onresult=e=>{const t=e.results[0][0].transcript;$(id).value+=($(id).value?' ':'')+t;$(id).dispatchEvent(new Event('input',{bubbles:true}))};
   rec.onend=()=>{btn.classList.remove('rec');rec=null};rec.onerror=()=>{btn.classList.remove('rec');rec=null};rec.start();
 }
 
@@ -234,16 +249,74 @@ async function exportDoc(id){
   }catch(e){alert('حدث خطأ أثناء إنشاء الملف: '+e.message)}
   busy(false);
 }
+/* ---------- التقرير الشهري ---------- */
+const jget=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+const jset=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const mAll=()=>jget('months',{});
+function tpl(){
+  const files=JSON.parse(JSON.stringify(APPDATA.MONTHLY)),hid=jget('mhidden',[]);
+  jget('mcustom',[]).forEach(c=>{let f=files.find(x=>x.name===c.file);if(!f){f={num:Math.max(0,...files.map(x=>x.num))+1,name:c.file,items:[]};files.push(f)}f.items.push({id:c.id,name:c.name,qs:c.qs,note:c.note||'',custom:true})});
+  files.forEach(f=>f.items=f.items.filter(i=>!hid.includes(i.id)));
+  return files.filter(f=>f.items.length);
+}
+const mName=ym=>Builder.MONTHS[+ym.slice(5,7)-1];
+function buildMonth(){
+  const ym=$('month').value;if(!ym){$('mform').innerHTML='';return}
+  const M=mName(ym),e=Object.assign({a:{},n:{},p:[]},mAll()[ym]||{});let h='';
+  tpl().forEach(f=>{
+    h+=`<details><summary>${f.num}- ${esc(f.name)}<span class="cnt"></span></summary>`;
+    f.items.forEach(it=>{
+      h+=`<div class="item"><p><b>${esc(it.name)}</b> <a href="#" onclick="${it.custom?'delItem':'hideItem'}('${it.id}');return false">${it.custom?'حذف':'إخفاء'}</a></p>`;
+      it.qs.forEach((q,i)=>{const id='m_'+it.id+'_'+i;
+        h+=`<p class="small">${esc(q.replace(/\{M\}/g,M))}</p><div class="row"><textarea id="${id}" data-i="${it.id}" data-q="${i}" oninput="mSaveField()">${esc((e.a[it.id]||[])[i])}</textarea><button class="mic" onclick="mic('${id}',this)">🎤</button></div>`});
+      h+=`<p class="small">ملاحظات</p><textarea id="mn_${it.id}" data-n="${it.id}" oninput="mSaveField()">${esc(e.n[it.id]!=null?e.n[it.id]:it.note)}</textarea></div>`;
+    });
+    h+='</details>';
+  });
+  $('mform').innerHTML=h;
+  $('mpoints').innerHTML=Array.from({length:Math.max(10,e.p.length)},(_,i)=>`<div class="row" style="margin-top:6px"><span style="padding:10px 2px">${i+1}</span><textarea id="mp_${i}" oninput="mSaveField()">${esc(e.p[i])}</textarea></div>`).join('');
+  $('nf').innerHTML=tpl().map(f=>`<option>${esc(f.name)}</option>`).join('');
+  mCounts();renderHidden();
+}
+function mSaveField(){
+  const ym=$('month').value;if(!ym)return;const e={a:{},n:{},p:[]};
+  document.querySelectorAll('#mform textarea[data-q]').forEach(t=>{(e.a[t.dataset.i]=e.a[t.dataset.i]||[])[+t.dataset.q]=t.value});
+  document.querySelectorAll('#mform textarea[data-n]').forEach(t=>{e.n[t.dataset.n]=t.value});
+  document.querySelectorAll('#mpoints textarea').forEach((t,i)=>{e.p[i]=t.value});
+  const all=mAll();all[ym]=e;jset('months',all);mCounts();
+}
+function mCounts(){document.querySelectorAll('#mform details').forEach(d=>{const ts=d.querySelectorAll('textarea[data-q]');let n=0;ts.forEach(t=>{if(t.value.trim())n++});d.querySelector('.cnt').textContent=n+'/'+ts.length})}
+function addItem(){
+  const f=($('nfn').value.trim()||$('nf').value),name=$('nin').value.trim(),qs=$('nqs').value.split('\n').map(x=>x.trim()).filter(Boolean);
+  if(!f||!name||!qs.length){alert('اكتب الملف واسم البند وخانة واحدة على الأقل');return}
+  mSaveField();const c=jget('mcustom',[]);c.push({id:'c'+Date.now(),file:f,name,qs});jset('mcustom',c);
+  $('nin').value='';$('nqs').value='';$('nfn').value='';buildMonth();
+}
+function delItem(id){if(!confirm('حذف هذا البند؟'))return;mSaveField();jset('mcustom',jget('mcustom',[]).filter(c=>c.id!==id));buildMonth()}
+function hideItem(id){if(!confirm('إخفاء البند من كل الشهور؟ تقدر تظهره تاني من إدارة البنود.'))return;mSaveField();const h=jget('mhidden',[]);h.push(id);jset('mhidden',h);buildMonth()}
+function showItem(id){jset('mhidden',jget('mhidden',[]).filter(x=>x!==id));mSaveField();buildMonth()}
+function renderHidden(){
+  const hid=jget('mhidden',[]),names={};APPDATA.MONTHLY.forEach(f=>f.items.forEach(i=>names[i.id]=f.name+' – '+i.name));
+  $('hid').innerHTML=hid.length?'<p class="small">بنود مخفية:</p>'+hid.map(id=>`<div class="hist"><span>${esc(names[id]||id)}</span><button onclick="showItem('${id}')">إظهار</button></div>`).join(''):'';
+}
 async function exportMonth(){
-  const m=$('month').value,v=Object.values(store()).filter(x=>(x.date||'').startsWith(m));
-  if(!v.length){alert('لا توجد زيارات في هذا الشهر');return}
-  busy(true);
-  try{download(await docx.Packer.toBlob(Builder.monthly(v,m,await assets(),cfgGet())),'التقرير_الشهري_'+m+'.docx')}
-  catch(e){alert('حدث خطأ أثناء إنشاء الملف: '+e.message)}
+  const ym=$('month').value;if(!ym){alert('اختر الشهر');return}
+  mSaveField();busy(true);
+  try{
+    const emp=(localStorage.getItem('emp')||'').trim().split(/\s+/).slice(0,2).join('_');
+    const blob=await docx.Packer.toBlob(Builder.monthlyForm(tpl(),ym,mAll()[ym]||{}));
+    download(blob,'فريق_المنسقين_تقرير_شهر_'+mName(ym)+'_'+ym.slice(0,4)+'م'+(emp?'_'+emp:'')+'.docx');
+  }catch(err){alert('حدث خطأ أثناء إنشاء الملف: '+err.message)}
   busy(false);
 }
-function backup(){const b=new Blob([JSON.stringify(store())],{type:'application/json'});download(b,'backup_'+new Date().toISOString().slice(0,10)+'.json')}
-function restore(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{putStore({...store(),...JSON.parse(r.result)});alert('تم الاسترجاع');renderHist()}catch(e){alert('ملف غير صالح')}};r.readAsText(f)}
+function backup(){const b=new Blob([JSON.stringify({v:2,visits:store(),months:mAll(),custom:jget('mcustom',[]),hidden:jget('mhidden',[])})],{type:'application/json'});download(b,'backup_'+new Date().toISOString().slice(0,10)+'.json')}
+function restore(inp){
+  const f=inp.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const o=JSON.parse(r.result);
+    if(o.v===2){putStore({...store(),...o.visits});jset('months',{...mAll(),...o.months});jset('mcustom',o.custom||[]);jset('mhidden',o.hidden||[])}else putStore({...store(),...o});
+    alert('تم الاسترجاع');renderHist();buildMonth()}catch(e){alert('ملف غير صالح')}};
+  r.readAsText(f);
+}
 
 build();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
