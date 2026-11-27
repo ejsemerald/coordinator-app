@@ -1,4 +1,4 @@
-const C='coord-v4';
+const C='coord-v5';
 const ASSETS=['./','index.html','manifest.json','banner.png','footer-logo.png','icon-192.png','icon-512.png','docx.js','data.js','builder.js','fbconfig.js','fb.js'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(ASSETS)));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});

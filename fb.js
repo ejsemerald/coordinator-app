@@ -1,6 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
-import { initializeFirestore, getFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, setDoc, deleteDoc, collection, getDocs, writeBatch, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+import { initializeFirestore, getFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, setDoc, deleteDoc, collection, getDocs, query, where, writeBatch, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
 const app = initializeApp(window.FBCONFIG);
 const auth = getAuth(app);
@@ -47,7 +47,15 @@ const FB = {
     if (rosterId) b.set(doc(db, 'roster', rosterId), rosterPatch, { merge: true });
     await b.commit();
   },
-  removeUserDoc: uid => deleteDoc(doc(db, 'users', uid))
+  removeUserDoc: uid => deleteDoc(doc(db, 'users', uid)),
+  /* مزامنة الزيارات والتقارير الشهرية */
+  putDoc: (c, id, data) => setDoc(doc(db, c, id), data),
+  delDoc: (c, id) => deleteDoc(doc(db, c, id)),
+  async queryDocs(c, filters) {
+    const q = (filters && filters.length) ? query(collection(db, c), ...filters.map(f => where(f[0], f[1], f[2]))) : collection(db, c);
+    const s = await getDocs(q);
+    return s.docs.map(d => Object.assign({ id: d.id }, d.data()));
+  }
 };
 window.FB = FB;
 window.__fbResolve && window.__fbResolve(FB);

@@ -155,14 +155,14 @@ function daily(d, photos, assets, cfg) {
 }
 
 /* ---------- monthly report (template-based, A3 landscape) ---------- */
-function monthlyForm(tpl, ym, entry) {
+function monthlySection(tpl, ym, entry, who) {
   const x = X(); entry = entry || {};
   const [yy, mm] = ym.split('-').map(Number), M = MONTHS[mm - 1];
   const cols = [900, 2300, 2800, 7200, 6500, 2410], W = cols.reduce((a, b) => a + b, 0), sz = 32;
   const RS = x.VerticalMergeType.RESTART, CT = x.VerticalMergeType.CONTINUE, TOP = x.VerticalAlign.TOP;
   const T = (t, o) => P(t, Object.assign({ size: sz, before: 40, after: 40 }, o || {}));
   const rows = [
-    ROW([C([PC('التقرير الشهرى لفريق المنسقين عن شهر ' + M + ' ' + yy + 'م', { size: 68 })], W, { span: 6, fill: 'FFD966' })], { cantSplit: true, header: true }),
+    ROW([C([PC('التقرير الشهرى لفريق المنسقين عن شهر ' + M + ' ' + yy + 'م' + (who ? ' – ' + who : ''), { size: 68 })], W, { span: 6, fill: 'FFD966' })], { cantSplit: true, header: true }),
     ROW(['م', 'اسم الملف', 'بنود الملف', 'ما تم انجازه', 'التفاصيل والاجراءات التى تمت', 'ملاحظات'].map((h, i) => C([PC(h, { size: 40 })], cols[i], { fill: 'B4C6E7' })), { cantSplit: true, header: true })
   ];
   tpl.forEach(f => {
@@ -196,12 +196,19 @@ function monthlyForm(tpl, ym, entry) {
       C([], cols[5])
     ], { h: 560 }));
   }
-  return new x.Document({
-    creator: 'Emerald', title: 'التقرير الشهري', styles: { default: { document: { run: { font: 'Arial', size: sz } } } },
-    sections: [{ properties: { page: { size: { width: 16838, height: 23811, orientation: x.PageOrientation.LANDSCAPE }, margin: { top: 850, bottom: 850, left: 850, right: 850 } } },
-      children: [TBL(rows, cols)] }]
-  });
+  return { properties: { page: { size: { width: 16838, height: 23811, orientation: x.PageOrientation.LANDSCAPE }, margin: { top: 850, bottom: 850, left: 850, right: 850 } } },
+    children: [TBL(rows, cols)] };
+}
+function monthlyForm(tpl, ym, entry, who) {
+  const x = X();
+  return new x.Document({ creator: 'Emerald', title: 'التقرير الشهري', styles: { default: { document: { run: { font: 'Arial', size: 32 } } } },
+    sections: [monthlySection(tpl, ym, entry, who)] });
+}
+function monthlyMulti(list, ym) {
+  const x = X();
+  return new x.Document({ creator: 'Emerald', title: 'التقرير الشهري المجمع', styles: { default: { document: { run: { font: 'Arial', size: 32 } } } },
+    sections: list.map(it => monthlySection(it.tpl, ym, it.entry, it.who)) });
 }
 
-root.Builder = { daily, monthlyForm, MONTHS };
+root.Builder = { daily, monthlyForm, monthlyMulti, MONTHS };
 })(typeof window !== 'undefined' ? window : globalThis);
