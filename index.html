@@ -41,15 +41,26 @@ summary .cnt{float:left;font-weight:normal;font-size:12px;color:#777}
 .ph img{width:100%;border-radius:6px;display:block;margin-bottom:6px}
 .hist{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e3ece5;font-size:14px}
 .hist button{border:0;background:var(--g2);border-radius:6px;padding:6px 10px;font-size:16px}
+#ubar{background:var(--g2);padding:6px 12px;font-size:13px;color:#234;display:none;justify-content:space-between}
+.ov{position:fixed;inset:0;background:#f1f5f2;overflow:auto;z-index:15;display:none}
+.box{max-width:420px;margin:0 auto;padding:16px}
+.err{color:#c62828;font-size:13px;min-height:18px;margin:6px 0}
+.tag{display:inline-block;background:var(--g);color:#fff;border-radius:10px;padding:1px 8px;font-size:11px}
+.req{border:1px solid #d8e3da;border-radius:8px;padding:8px;margin-top:8px}
+.req select{margin:6px 0}
+.ltr{direction:ltr;text-align:left}
 #busy{display:none;position:fixed;inset:0;background:#000a;color:#fff;align-items:center;justify-content:center;font-size:18px;z-index:20}
 </style>
 </head>
 <body>
 <header class="top"><img src="banner.png" alt="إميرالد للتطوير التعليمي وإدارة المدارس"></header>
+<div id="ubar"></div>
 <nav>
 <button id="t1" class="on" onclick="go(1)">زيارة اليوم</button>
 <button id="t2" onclick="go(2)">السجل</button>
-<button id="t3" onclick="go(3)">تقرير الشهر</button>
+<button id="t3" onclick="go(3)">الشهر</button>
+<button id="t4" onclick="go(4)">حسابي</button>
+<button id="t5" onclick="go(5)" style="display:none">إدارة</button>
 </nav>
 
 <div id="p1" class="page on">
@@ -119,24 +130,71 @@ summary .cnt{float:left;font-weight:normal;font-size:12px;color:#777}
   <input type="file" id="rf" accept=".json" style="display:none" onchange="restore(this)">
  </div>
 </div>
+<div id="p4" class="page">
+ <div class="card"><b>حسابي</b><div id="acct" style="margin-top:8px;font-size:14px;line-height:1.9"></div></div>
+ <div class="card" id="pnote" style="display:none"></div>
+ <div class="card">
+  <b>تغيير كلمة السر</b>
+  <label>كلمة السر الحالية</label><input id="pOld" type="password" class="ltr">
+  <label>كلمة السر الجديدة (8 حروف على الأقل)</label><input id="pNew" type="password" class="ltr">
+  <label>تأكيد كلمة السر الجديدة</label><input id="pNew2" type="password" class="ltr">
+  <p id="pMsg" class="err"></p>
+  <button class="btn sec" onclick="chPass()">تغيير كلمة السر</button>
+ </div>
+ <button class="btn red" style="background:#c62828" onclick="doLogout()">تسجيل الخروج</button>
+</div>
+<div id="p5" class="page">
+ <div class="card"><b>إدارة الحسابات</b> <button class="mic" style="width:auto;padding:4px 10px;font-size:14px" onclick="adminLoad()">تحديث</button><p id="admMsg" class="small"></p><div id="admStats" class="small"></div></div>
+ <div class="card"><b>طلبات التسجيل الجديدة</b><div id="admPend"></div></div>
+ <div class="card"><b>الحسابات المعتمدة</b><div id="admOk"></div></div>
+ <div class="card">
+  <b>استيراد هيكل المنسقين والمدارس</b>
+  <p class="small">اختار ملف roster_seed.json (محفوظ عندك، مش على GitHub). الاستيراد آمن لو اتكرر، وبيحدّث المدارس من غير ما يفك الربط.</p>
+  <input type="file" id="rosterFile" accept=".json,application/json">
+  <button class="btn sec" onclick="admImport()">استيراد الهيكل</button>
+  <button class="btn sec" onclick="admSync()">تحديث بيانات المعتمدين من الهيكل</button>
+ </div>
+</div>
+<div id="auth" class="ov"><div class="box">
+ <img src="banner.png" alt="" style="width:100%;margin-bottom:8px">
+ <h3 id="authTitle" style="color:var(--g)">تسجيل الدخول</h3>
+ <div id="regName" style="display:none"><label>الاسم بالكامل (بالعربي)</label><input id="aName" autocomplete="name"></div>
+ <label>اسم المستخدم (إنجليزي)</label><input id="aUser" class="ltr" autocapitalize="none" autocomplete="username" spellcheck="false">
+ <label>كلمة السر</label><input id="aPass" type="password" class="ltr" autocomplete="current-password">
+ <div id="regPass2" style="display:none"><label>تأكيد كلمة السر</label><input id="aPass2" type="password" class="ltr" autocomplete="new-password"></div>
+ <p id="aMsg" class="err"></p>
+ <button class="btn" id="aGo" onclick="authGo()">دخول</button>
+ <button class="btn sec" id="aTog" onclick="authToggle()">حساب جديد؟ سجّل هنا</button>
+</div></div>
+<div id="state" class="ov" style="display:block"><div class="box">
+ <img src="banner.png" alt="" style="width:100%;margin-bottom:8px">
+ <h3 id="stTitle" style="color:var(--g)">جاري التحميل...</h3>
+ <p id="stMsg" style="font-size:14px;line-height:1.8"></p>
+ <div id="stBtns"></div>
+</div></div>
 <div id="busy">جاري تجهيز الملف...</div>
 
+<script>window.FBready=new Promise(function(r){window.__fbResolve=r});</script>
+<script src="fbconfig.js"></script>
+<script type="module" src="fb.js"></script>
 <script src="docx.js"></script>
 <script src="data.js"></script>
 <script src="builder.js"></script>
 <script>
 const {SECTIONS,SCHOOLS,ATT}=APPDATA;
+let CUR_SCHOOLS=SCHOOLS,PFX='',ME=null,PROF=null,STARTED=false,_FB=null,AUTH_REG=false,AUTH_BUSY=false,ADM=null;
+const L={g:k=>window.localStorage.getItem(PFX+k),s:(k,v)=>window.localStorage.setItem(PFX+k,v)};
 const $=id=>document.getElementById(id);
-const store=()=>{try{return JSON.parse(localStorage.getItem('visits')||'{}')}catch(e){return {}}};
-const putStore=o=>localStorage.setItem('visits',JSON.stringify(o));
+const store=()=>{try{return JSON.parse(L.g('visits')||'{}')}catch(e){return {}}};
+const putStore=o=>L.s('visits',JSON.stringify(o));
 const uid=()=>'v'+Date.now()+Math.random().toString(36).slice(2,7);
-const DEF={approver:'أ/ حمدى رحيل',sector:'ماجد رفعت'};
-const cfgGet=()=>{try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('cfg')||'{}'))}catch(e){return Object.assign({},DEF)}};
+const defCfg=()=>({approver:'أ/ حمدى رحيل',sector:(PROF&&PROF.headName)||'ماجد رفعت'});
+const cfgGet=()=>{try{return Object.assign({},defCfg(),JSON.parse(L.g('cfg')||'{}'))}catch(e){return defCfg()}};
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const safe=s=>String(s||'').replace(/[\\/:*?"<>|]/g,'').trim().replace(/\s+/g,'_');
 let cur=null;
 
-function go(n){[1,2,3].forEach(i=>{$('p'+i).classList.toggle('on',i==n);$('t'+i).classList.toggle('on',i==n)});if(n==2)renderHist()}
+function go(n){[1,2,3,4,5].forEach(i=>{$('p'+i).classList.toggle('on',i==n);$('t'+i).classList.toggle('on',i==n)});if(n==2)renderHist();if(n==5)adminLoad();if(n==4)acctRender()}
 
 /* ---------- الصور (IndexedDB) ---------- */
 let _db;
@@ -169,7 +227,7 @@ async function rmPhoto(id){if(!confirm('حذف الصورة؟'))return;await del
 /* ---------- بناء الشاشة ---------- */
 function attHtml(){return '<div class="attgrid">'+ATT.map((a,i)=>`<div><span>${a}</span><input id="a_${i}" type="number" inputmode="numeric" min="0" oninput="save()"></div>`).join('')+'</div>'}
 function build(){
-  $('schoolSel').innerHTML='<option value="">اختر المدرسة...</option>'+SCHOOLS.slice().sort((a,b)=>a.localeCompare(b,'ar')).map(s=>`<option>${s}</option>`).join('')+'<option value="__o">مدرسة أخرى (اكتب الاسم)</option>';
+  $('schoolSel').innerHTML='<option value="">اختر المدرسة...</option>'+CUR_SCHOOLS.slice().sort((a,b)=>a.localeCompare(b,'ar')).map(s=>`<option>${s}</option>`).join('')+'<option value="__o">مدرسة أخرى (اكتب الاسم)</option>';
   let h='';
   SECTIONS.forEach(sec=>{
     h+=`<details><summary>${sec.title}<span class="cnt" id="c_${sec.id}"></span></summary>`;
@@ -186,7 +244,7 @@ function build(){
   $('month').value=new Date().toISOString().slice(0,7);
   newVisit(true);buildMonth();
 }
-function saveCfg(){localStorage.setItem('cfg',JSON.stringify({approver:$('approver').value,sector:$('sector').value}))}
+function saveCfg(){L.s('cfg',JSON.stringify({approver:$('approver').value,sector:$('sector').value}))}
 function schoolUI(){$('schoolOther').style.display=$('schoolSel').value=='__o'?'block':'none'}
 function schoolChange(){schoolUI();save()}
 function schoolName(){return $('schoolSel').value=='__o'?$('schoolOther').value:$('schoolSel').value}
@@ -195,8 +253,8 @@ function collect(){
   SECTIONS.forEach(s=>s.items.forEach((it,i)=>{d.f[s.id+'_'+i]=$('f_'+s.id+'_'+i).value}));return d;
 }
 function fill(d){
-  $('emp').value=d.emp||localStorage.getItem('emp')||'';$('job').value=d.job||'منسق اقليمي';
-  if(d.schoolSel&&d.schoolSel!=='__o'&&!SCHOOLS.includes(d.schoolSel)){$('schoolSel').value='__o';$('schoolOther').value=d.school||d.schoolSel}
+  $('emp').value=d.emp||L.g('emp')||'';$('job').value=d.job||'منسق اقليمي';
+  if(d.schoolSel&&d.schoolSel!=='__o'&&!CUR_SCHOOLS.includes(d.schoolSel)){$('schoolSel').value='__o';$('schoolOther').value=d.school||d.schoolSel}
   else{$('schoolSel').value=d.schoolSel||'';$('schoolOther').value=d.schoolSel=='__o'?d.school:''}
   schoolUI();
   $('date').value=d.date||new Date().toISOString().slice(0,10);$('from').value=d.from||'08:00';$('to').value=d.to||'15:00';
@@ -205,13 +263,13 @@ function fill(d){
   counts();renderPhotos();
 }
 function counts(){SECTIONS.forEach(s=>{let n=0;s.items.forEach((it,i)=>{if($('f_'+s.id+'_'+i).value.trim())n++});$('c_'+s.id).textContent=n+'/'+s.items.length})}
-function save(){if(!cur)return;const o=store();o[cur]=collect();putStore(o);localStorage.setItem('emp',$('emp').value);localStorage.setItem('last',cur);counts()}
+function save(){if(!cur)return;const o=store();o[cur]=collect();putStore(o);L.s('emp',$('emp').value);L.s('last',cur);counts()}
 function newVisit(first){
-  const last=localStorage.getItem('last'),o=store();
+  const last=L.g('last'),o=store();
   if(first&&last&&o[last]){cur=last;fill(o[last]);return}
   cur=uid();fill({});save();go(1);window.scrollTo(0,0);
 }
-function openVisit(id){cur=id;localStorage.setItem('last',id);fill(store()[id]);go(1)}
+function openVisit(id){cur=id;L.s('last',id);fill(store()[id]);go(1)}
 async function delVisit(id){
   if(!confirm('حذف هذه الزيارة وصورها؟'))return;
   try{for(const p of await getPhotos(id))await delPhotoDb(p.id)}catch(e){}
@@ -250,8 +308,8 @@ async function exportDoc(id){
   busy(false);
 }
 /* ---------- التقرير الشهري ---------- */
-const jget=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
-const jset=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const jget=(k,d)=>{try{return JSON.parse(L.g(k))||d}catch(e){return d}};
+const jset=(k,v)=>L.s(k,JSON.stringify(v));
 const mAll=()=>jget('months',{});
 function tpl(){
   const files=JSON.parse(JSON.stringify(APPDATA.MONTHLY)),hid=jget('mhidden',[]);
@@ -303,7 +361,7 @@ async function exportMonth(){
   const ym=$('month').value;if(!ym){alert('اختر الشهر');return}
   mSaveField();busy(true);
   try{
-    const emp=(localStorage.getItem('emp')||'').trim().split(/\s+/).slice(0,2).join('_');
+    const emp=(L.g('emp')||'').trim().split(/\s+/).slice(0,2).join('_');
     const blob=await docx.Packer.toBlob(Builder.monthlyForm(tpl(),ym,mAll()[ym]||{}));
     download(blob,'فريق_المنسقين_تقرير_شهر_'+mName(ym)+'_'+ym.slice(0,4)+'م'+(emp?'_'+emp:'')+'.docx');
   }catch(err){alert('حدث خطأ أثناء إنشاء الملف: '+err.message)}
@@ -318,7 +376,153 @@ function restore(inp){
   r.readAsText(f);
 }
 
-build();
+/* ================= الحسابات والصلاحيات ================= */
+const ROLE_AR={coordinator:'منسق',sector_head:'رئيس قطاع',chief:'رئيس المنسقين',pending:'قيد المراجعة'};
+const TEAM_AR={majed:'ماجد رفعت',mina:'مينا رؤوف',mohamed:'محمد محمود'};
+function errAr(e){
+  const c=(e&&(e.code||''))+'';
+  if(/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c))return 'اسم المستخدم أو كلمة السر غير صحيحة';
+  if(/email-already-in-use/.test(c))return 'اسم المستخدم ده مستخدم قبل كده، اختار اسم تاني';
+  if(/weak-password/.test(c))return 'كلمة السر ضعيفة، استخدم 8 حروف على الأقل';
+  if(/network|unavailable/.test(c))return 'مفيش اتصال بالنت';
+  if(/too-many-requests/.test(c))return 'محاولات كتير، استنى شوية وحاول تاني';
+  if(/operation-not-allowed/.test(c))return 'تسجيل الدخول بكلمة السر مش متفعّل في Firebase (Email/Password)';
+  if(/permission-denied/.test(c))return 'مفيش صلاحية: قواعد Firestore غالبا مش منشورة أو فيها خطأ';
+  if(/requires-recent-login/.test(c))return 'سجّل خروج وادخل تاني وبعدين جرّب';
+  return 'حدث خطأ: '+(c||(e&&e.message)||'غير معروف');
+}
+function stateShow(title,msg,btns){
+  $('auth').style.display='none';$('state').style.display='block';$('stTitle').textContent=title;$('stMsg').textContent=msg||'';
+  $('stBtns').innerHTML=(btns||[]).map(b=>`<button class="btn ${b[2]||'sec'}" onclick="${b[1]}">${b[0]}</button>`).join('');
+}
+function isAdminUser(){return !!ME&&(((window.APP_CFG&&APP_CFG.adminUsers)||[]).includes(_FB.userOf(ME.email))||(PROF&&PROF.isAdmin===true))}
+function showTabs(list){[1,2,3,4,5].forEach(i=>{$('t'+i).style.display=list.includes(i)?'':'none'})}
+function authToggle(){
+  AUTH_REG=!AUTH_REG;$('authTitle').textContent=AUTH_REG?'حساب جديد':'تسجيل الدخول';$('aGo').textContent=AUTH_REG?'تسجيل':'دخول';
+  $('aTog').textContent=AUTH_REG?'عندي حساب؟ ادخل':'حساب جديد؟ سجّل هنا';$('regName').style.display=$('regPass2').style.display=AUTH_REG?'block':'none';$('aMsg').textContent='';
+  $('aPass').autocomplete=AUTH_REG?'new-password':'current-password';
+}
+async function authGo(){
+  const u=$('aUser').value.trim().toLowerCase(),p=$('aPass').value,m=t=>{$('aMsg').textContent=t};m('');
+  if(!_FB.validUser(u)){m('اسم المستخدم لازم يكون إنجليزي (حروف وأرقام ونقطة أو - أو _) من 3 لـ 30 حرف');return}
+  if(AUTH_REG){
+    if($('aName').value.trim().length<3){m('اكتب اسمك بالكامل');return}
+    if(p.length<8){m('كلمة السر لازم تكون 8 حروف على الأقل');return}
+    if(p!==$('aPass2').value){m('كلمتا السر غير متطابقتين');return}
+  }else if(!p){m('اكتب كلمة السر');return}
+  busy(true);AUTH_BUSY=true;
+  try{if(AUTH_REG)await _FB.signUp(u,p,$('aName').value);else await _FB.signIn(u,p)}
+  catch(e){m(errAr(e));AUTH_BUSY=false;busy(false);return}
+  AUTH_BUSY=false;busy(false);$('aPass').value=$('aPass2').value='';
+  if(_FB.current())onAuth(_FB.current());
+}
+async function boot(){
+  stateShow('جاري التحميل...','');
+  try{_FB=await Promise.race([window.FBready,new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),15000))])}
+  catch(e){stateShow('تعذر تحميل خدمة الحسابات','لازم يكون فيه نت في أول مرة تفتح فيها التطبيق. تأكد من الاتصال وحاول تاني.',[['إعادة المحاولة','location.reload()','']]);return}
+  _FB.onAuth(onAuth);
+}
+async function onAuth(user){
+  if(AUTH_BUSY)return;
+  if(!user){ME=null;PROF=null;$('state').style.display='none';$('ubar').style.display='none';$('auth').style.display='block';return}
+  ME=user;PFX='u_'+user.uid+'_';const ck='prof_'+user.uid;
+  try{
+    PROF=await _FB.getProfile(user.uid);
+    if(!PROF){try{await _FB.createPending(user,'')}catch(e){}PROF=await _FB.getProfile(user.uid)}
+    if(PROF)window.localStorage.setItem(ck,JSON.stringify(PROF));
+  }catch(e){
+    const c=window.localStorage.getItem(ck);PROF=c?JSON.parse(c):null;
+    if(!PROF){stateShow('تعذر تحميل بيانات حسابك',errAr(e),[['إعادة المحاولة','location.reload()',''],['تسجيل الخروج','doLogout()']]);return}
+  }
+  if(!PROF){stateShow('تعذر تحميل بيانات حسابك','حاول تاني بعد شوية.',[['إعادة المحاولة','location.reload()','']]);return}
+  route();
+}
+function claimLegacy(){
+  const ls=window.localStorage;if(ls.getItem('legacyClaimed'))return;
+  const keys=['visits','emp','last','cfg','months','mcustom','mhidden'];
+  keys.forEach(k=>{const v=ls.getItem(k);if(v!==null&&ls.getItem(PFX+k)===null)ls.setItem(PFX+k,v);ls.removeItem(k)});
+  ls.setItem('legacyClaimed','1');
+}
+function route(){
+  const admin=isAdminUser(),role=PROF.role,work=['coordinator','sector_head'].includes(role);
+  $('state').style.display='none';$('auth').style.display='none';
+  const ub=$('ubar');ub.style.display='flex';ub.innerHTML=`<span>👤 ${esc(PROF.displayName||PROF.name||_FB.userOf(ME.email))}</span><span class="tag">${ROLE_AR[role]||role}${admin?' + أدمن':''}</span>`;
+  if(work){
+    claimLegacy();startApp();showTabs(admin?[1,2,3,4,5]:[1,2,3,4]);go(1);return;
+  }
+  if(role==='chief'){showTabs(admin?[4,5]:[4]);go(4);return}
+  if(admin){showTabs([4,5]);go(5);return}
+  stateShow('حسابك قيد المراجعة','تم تسجيل حسابك باسم المستخدم "'+_FB.userOf(ME.email)+'". هيتفعّل أول ما الأدمن يوافق عليه. اضغط تحديث بعد ما يوافق.',[['تحديث','refreshProfile()','red'],['تسجيل الخروج','doLogout()']]);
+  $('ubar').style.display='none';
+}
+async function refreshProfile(){busy(true);try{PROF=await _FB.getProfile(ME.uid);if(PROF)window.localStorage.setItem('prof_'+ME.uid,JSON.stringify(PROF))}catch(e){alert(errAr(e))}busy(false);if(PROF)route()}
+function startApp(){
+  if(STARTED)return;STARTED=true;
+  CUR_SCHOOLS=(PROF.schools&&PROF.schools.length)?PROF.schools:SCHOOLS;
+  if(!L.g('emp'))L.s('emp',PROF.displayName||PROF.name||'');
+  build();
+}
+async function doLogout(){try{await _FB.signOut()}catch(e){}location.reload()}
+function acctRender(){
+  if(!PROF)return;const r=PROF.role;
+  $('acct').innerHTML=`الاسم: <b>${esc(PROF.displayName||PROF.name)}</b><br>اسم المستخدم: <b dir="ltr">${esc(_FB.userOf(ME.email))}</b><br>الدور: <b>${ROLE_AR[r]||r}</b>${isAdminUser()?' (أدمن)':''}`
+   +(PROF.team?`<br>القطاع: <b>${TEAM_AR[PROF.team]||PROF.team}</b>`:'')+((PROF.schools||[]).length?`<br>عدد مدارسك: <b>${PROF.schools.length}</b>`:'');
+  const n=$('pnote');n.style.display='block';
+  n.innerHTML=r==='chief'?'عرض تقارير المنسقين هيتفعّل في المرحلة الجاية.':'<span class="small">تقاريرك لسه بتتحفظ على موبايلك فقط. مزامنتها أونلاين ورؤية رؤساء القطاع لها في المرحلة الجاية.</span>';
+}
+async function chPass(){
+  const o=$('pOld').value,n=$('pNew').value,m=t=>{$('pMsg').textContent=t};m('');
+  if(!o){m('اكتب كلمة السر الحالية');return}if(n.length<8){m('كلمة السر الجديدة 8 حروف على الأقل');return}if(n!==$('pNew2').value){m('كلمتا السر غير متطابقتين');return}
+  busy(true);try{await _FB.changePassword(o,n);m('تم تغيير كلمة السر ✓');$('pOld').value=$('pNew').value=$('pNew2').value=''}catch(e){m(errAr(e))}busy(false);
+}
+
+/* ---------- شاشة الأدمن ---------- */
+async function adminLoad(){
+  if(!isAdminUser())return;$('admMsg').textContent='جاري التحميل...';
+  try{const [us,ro]=await Promise.all([_FB.listUsers(),_FB.listRoster()]);ADM={us,ro};adminRender();$('admMsg').textContent=''}
+  catch(e){$('admMsg').textContent=errAr(e)}
+}
+function adminRender(){
+  const {us,ro}=ADM,linked=new Set(us.filter(u=>u.rosterId).map(u=>u.rosterId)),free=ro.filter(r=>!linked.has(r.id));
+  const pend=us.filter(u=>u.role==='pending'),ok=us.filter(u=>u.role!=='pending');
+  $('admStats').textContent=`الهيكل: ${ro.length} شخص، ${ro.reduce((n,r)=>n+(r.schools||[]).length,0)} مدرسة | المعتمدين: ${ok.length} | طلبات معلّقة: ${pend.length}`;
+  $('admPend').innerHTML=pend.length?pend.map(u=>`<div class="req"><b>${esc(u.name)||'(بدون اسم)'}</b> <span class="small" dir="ltr">${esc(u.username)}</span>
+   <select id="sel_${u.uid}"><option value="">— اربطه بشخص من الهيكل —</option>${free.map(r=>`<option value="${r.id}">${esc(r.name)} (${ROLE_AR[r.role]})</option>`).join('')}<option value="__chief">رئيس المنسقين</option></select>
+   <div class="row"><button class="btn" style="margin:0" onclick="admApprove('${u.uid}')">اعتماد</button><button class="btn sec" style="margin:0" onclick="admDelete('${u.uid}')">حذف الطلب</button></div></div>`).join(''):'<p class="small">مفيش طلبات معلّقة</p>';
+  $('admOk').innerHTML=ok.length?ok.map(u=>`<div class="req"><b>${esc(u.displayName||u.name)}</b> <span class="tag">${ROLE_AR[u.role]||u.role}</span> <span class="small" dir="ltr">${esc(u.username)}</span>
+   <div class="small">${u.team?'القطاع: '+(TEAM_AR[u.team]||u.team)+' | ':''}المدارس: ${(u.schools||[]).length}</div>
+   <button class="btn sec" style="margin-top:6px" onclick="admRevoke('${u.uid}')">إلغاء الاعتماد</button></div>`).join(''):'<p class="small">لسه مفيش حسابات معتمدة</p>';
+}
+async function admApprove(uid){
+  const rid=$('sel_'+uid).value;if(!rid){alert('اختار الشخص من الهيكل الأول');return}
+  const u=ADM.us.find(x=>x.uid===uid);busy(true);
+  try{
+    if(rid==='__chief')await _FB.approve(uid,{role:'chief',team:'',schools:[],displayName:u.name,headName:'',rosterId:'__chief'});
+    else{const r=ADM.ro.find(x=>x.id===rid);await _FB.approve(uid,{role:r.role,team:r.team,schools:r.schools||[],displayName:r.name,headName:r.headName||'',rosterId:r.id},r.id,{username:u.username,uid:uid})}
+    if(ME&&uid===ME.uid){PROF=await _FB.getProfile(uid);window.localStorage.setItem('prof_'+uid,JSON.stringify(PROF));route()}
+  }catch(e){alert(errAr(e))}
+  busy(false);adminLoad();
+}
+async function admRevoke(uid){
+  if(!confirm('إلغاء اعتماد الحساب ده؟ هيفضل مسجّل بس من غير صلاحيات.'))return;
+  const u=ADM.us.find(x=>x.uid===uid);busy(true);
+  try{await _FB.approve(uid,{role:'pending',team:'',schools:[],displayName:'',headName:'',rosterId:null},(u.rosterId&&u.rosterId!=='__chief')?u.rosterId:null,{username:null,uid:null})}catch(e){alert(errAr(e))}
+  busy(false);adminLoad();
+}
+async function admDelete(uid){if(!confirm('حذف الطلب؟'))return;busy(true);try{await _FB.removeUserDoc(uid)}catch(e){alert(errAr(e))}busy(false);adminLoad()}
+async function admImport(){
+  const f=$('rosterFile').files[0];if(!f){alert('اختار ملف الهيكل الأول');return}
+  let j;try{j=JSON.parse(await f.text())}catch(e){alert('الملف مش JSON سليم');return}
+  const ps=j.people;if(!Array.isArray(ps)||!ps.length||ps.some(p=>!p.id||!p.name||!p.role||!p.team||!Array.isArray(p.schools))){alert('شكل الملف غير صحيح');return}
+  busy(true);try{await _FB.importRoster(ps);alert('تم استيراد '+ps.length+' شخص')}catch(e){alert(errAr(e))}busy(false);adminLoad();
+}
+async function admSync(){
+  if(!ADM)return;const by={};ADM.ro.forEach(r=>by[r.id]=r);let n=0;busy(true);
+  try{for(const u of ADM.us){const r=u.rosterId&&by[u.rosterId];if(!r)continue;await _FB.approve(u.uid,{role:r.role,team:r.team,schools:r.schools||[],displayName:r.name,headName:r.headName||''});n++}alert('تم تحديث '+n+' حساب')}
+  catch(e){alert(errAr(e))}busy(false);adminLoad();
+}
+
+boot();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
 </script>
 </body>
